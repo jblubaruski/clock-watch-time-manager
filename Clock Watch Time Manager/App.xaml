@@ -11,18 +11,19 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- separator styles -->
             <Style x:Key="horizontalSeparatorStyle" TargetType="BoxView">
                 <Setter Property="Color" Value="Black"/>
                 <Setter Property="HeightRequest" Value="1"/>
                 <Setter Property="HorizontalOptions" Value="Fill"/>
             </Style>
-
             <Style x:Key="verticalSeparatorStyle" TargetType="BoxView">
                 <Setter Property="Color" Value="Black"/>
                 <Setter Property="WidthRequest" Value="1"/>
                 <Setter Property="VerticalOptions" Value="Fill"/>
             </Style>
 
+            <!-- button styles -->
             <Style x:Key="buttonStyle" TargetType="Button">
                 <Setter Property="TextColor" Value="Black"/>
                 <Setter Property="FontFamily" Value="Bahnschrift"/>
@@ -36,10 +37,21 @@
                 <Setter Property="VerticalOptions" Value="Fill"/>
             </Style>
 
+            <!-- label styles -->
             <Style x:Key="labelStyle" TargetType="Label">
                 <Setter Property="FontFamily" Value="Bahnscrift"/>
                 <Setter Property="FontSize" Value="16"/>
             </Style>
+            <Style x:Key="descriptionLabelStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="Bahnscrift"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+            <!-- constants -->
+            <x:String x:Key="default12HourTime">00:00:00 MM</x:String>
+            <x:String x:Key="defaultTimeDuration">00:00:00</x:String>
+            <x:String x:Key="defaultDate">00/00/0000</x:String>
+            <x:String x:Key="stringM160Char">MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM</x:String>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
