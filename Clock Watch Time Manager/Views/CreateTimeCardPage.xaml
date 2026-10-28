@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Clock_Watch_Time_Manager.Views.CreateTimeCardPage"
+             Shell.NavBarIsVisible="False">
+
+    <VerticalStackLayout>
+        <!-- time card - top bar separator -->
+        <BoxView
+            Style="{StaticResource horizontalSeparatorStyle}"
+            Grid.Row="0" Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Margin="0,0,0,2"/>
+        <BoxView
+            Style="{StaticResource horizontalSeparatorStyle}"
+            Grid.Row="1" Grid.Column="0"
+            Grid.ColumnSpan="3"/>
+
+        <!-- time card header layout -->
+        <Grid
+            RowDefinitions="30,Auto,Auto"
+            ColumnDefinitions="150,150,150"
+            Padding="5,10,5,5">
+
+            <!-- time card header buttons -->
+            <Button
+                Text="Clock In"
+                Style="{StaticResource buttonStyle}"
+                Grid.Row="0" Grid.Column="0"/>
+            <Button
+                Text="Clock Out"
+                Style="{StaticResource buttonStyle}"
+                Grid.Row="0" Grid.Column="1"
+                Margin="5,0,0,0"/>
+            <Label
+                Text="Time Card Saved!"
+                Style="{StaticResource labelStyle}"
+                Margin="5,0,0,0"
+                VerticalOptions="Center"
+                IsVisible="True"
+                Grid.Row="0" Grid.Column="2"/>
+
+            <!-- clock in time info -->
+            <Label
+                Text="Clock In Time:"
+                HorizontalTextAlignment="End"
+                Style="{StaticResource labelStyle}"
+                Margin="5,5,0,0"
+                Grid.Row="1" Grid.Column="0"/>
+            <HorizontalStackLayout
+                Grid.Row="1" Grid.Column="1"
+                Grid.ColumnSpan="2">
+                <Label
+                    Text="00:00:00 MM"
+                    Style="{StaticResource labelStyle}"
+                    WidthRequest="100"
+                    Margin="5,5,0,0"/>
+                <Label
+                    Text="00/00/0000"
+                    Style="{StaticResource labelStyle}"
+                    Margin="5,5,0,0"/>
+            </HorizontalStackLayout>
+
+            <!-- work period duration info -->
+            <Label
+                Text="Time Since Clock In:"
+                HorizontalTextAlignment="End"
+                Style="{StaticResource labelStyle}"
+                Margin="0,5,0,0"
+                Grid.Row="2" Grid.Column="0"/>
+            <Label
+                Text="00:00:00"
+                Style="{StaticResource labelStyle}"
+                Margin="5,5,0,0"
+                Grid.Row="2" Grid.Column="1"
+                Grid.ColumnSpan="2"/>
+        </Grid>
+
+        <!-- header - timesheet separator -->
+        <BoxView
+            Style="{StaticResource horizontalSeparatorStyle}"
+            Grid.Row="1" Grid.Column="0"
+            Grid.ColumnSpan="3"/>
+
+        <!-- timesheet layout -->
+        <Grid
+            RowDefinitions="Auto,Auto"
+            ColumnDefinitions="Auto,Auto,Auto"
+            Padding="5,10,5,0">
+
+            <!-- break controls -->
+            <HorizontalStackLayout
+                Grid.Row="0" Grid.Column="0">
+
+                <Button
+                    Text="Start Break"
+                    Style="{StaticResource buttonStyle}"/>
+                <Button
+                    Text="End Break"
+                    Margin="5,0,0,0"
+                    Style="{StaticResource buttonStyle}"/>
+                <Label
+                    Text="Break Saved!"
+                    Margin="5,0,0,0"
+                    VerticalOptions="Center"
+                    IsVisible="True"
+                    Style="{StaticResource labelStyle}"/>
+            </HorizontalStackLayout>
+
+            <!-- break display -->
+            <ScrollView
+                Grid.Row="1" Grid.Column="0">
+
+                <Label Text="Start a break to add an entry"/>
+            </ScrollView>
+
+            <!-- breaks - tasks separator -->
+            <BoxView
+                Style="{StaticResource verticalSeparatorStyle}"
+                Margin="5,0"
+                Grid.Row="0" Grid.Column="1"
+                Grid.RowSpan="2"/>
+
+            <!-- task controls -->
+            <HorizontalStackLayout
+                Grid.Row="0" Grid.Column="2">
+
+                <Button
+                    Text="Start Task!"
+                    Style="{StaticResource buttonStyle}"/>
+                <Button
+                    Text="End Task"
+                    Margin="5,0,0,0"
+                    Style="{StaticResource buttonStyle}"/>
+                <Label
+                    Text="Task Saved!"
+                    Margin="5,0,0,0"
+                    VerticalOptions="Center"
+                    IsVisible="True"
+                    Style="{StaticResource labelStyle}"/>
+            </HorizontalStackLayout>
+
+            <!-- task display -->
+            <ScrollView
+                Grid.Row="1" Grid.Column="2">
+
+                <Label Text="Start a task to add an entry"/>
+            </ScrollView>
+        </Grid>
+    </VerticalStackLayout>
+</ContentPage>
