@@ -12,9 +12,17 @@ namespace Clock_Watch_Time_Manager.Models
     internal class TimeCard
     {
         private TimeSheet TimeSheet { get; } = new();
-        public TimeOnly? ClockInTime { get; private set; } = null;
-        public TimeOnly? ClockOutTime { get; private set; } = null;
-        public DateOnly? ClockInDate { get; private set; } = null;
-        public DateOnly? ClockOutDate { get; private set; } = null;
+        public DateTime? ClockInDateTime { get; set; } = null;
+        public DateTime? ClockOutDateTime { get; set; } = null;
+
+        public override string ToString()
+        {
+            string str = "";
+
+            str += $"Clock in: {ClockInDateTime}\n";
+            str += $"Clock out: {ClockOutDateTime}";
+
+            return str;
+        }
     }
 }

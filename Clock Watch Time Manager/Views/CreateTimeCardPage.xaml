@@ -1,8 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:Clock_Watch_Time_Manager.ViewModels"
              x:Class="Clock_Watch_Time_Manager.Views.CreateTimeCardPage"
              Shell.NavBarIsVisible="False">
+    <ContentPage.BindingContext>
+        <viewmodel:CreateTimeCardViewModel/>
+    </ContentPage.BindingContext>
 
     <VerticalStackLayout>
         <!-- time card - top bar separator -->
@@ -24,20 +28,27 @@
 
             <!-- time card header buttons -->
             <Button
+                x:Name="clockInButton"
                 Text="Clock In"
                 Style="{StaticResource buttonStyle}"
+                Command="{Binding ClockInCommand}"
+                IsEnabled="{Binding ClockInEnabled}"
                 Grid.Row="0" Grid.Column="0"/>
             <Button
+                x:Name="clockOutButton"
                 Text="Clock Out"
                 Style="{StaticResource buttonStyle}"
+                Command="{Binding ClockOutCommand}"
+                IsEnabled="{Binding ClockOutEnabled}"
                 Grid.Row="0" Grid.Column="1"
                 Margin="5,0,0,0"/>
             <Label
+                x:Name="timeCardSavedNotification"
                 Text="Time Card Saved!"
                 Style="{StaticResource labelStyle}"
                 Margin="5,0,0,0"
                 VerticalOptions="Center"
-                IsVisible="True"
+                IsVisible="{Binding TimeCardSavedNotifVisible}"
                 Grid.Row="0" Grid.Column="2"/>
 
             <!-- clock in time info -->
@@ -47,19 +58,13 @@
                 Style="{StaticResource labelStyle}"
                 Margin="5,5,0,0"
                 Grid.Row="1" Grid.Column="0"/>
-            <HorizontalStackLayout
+            <Label
+                x:Name="clockInDateTimeLabel"
+                Text="{Binding ClockInDateTime}"
+                Style="{StaticResource labelStyle}"
+                Margin="5,5,0,0"
                 Grid.Row="1" Grid.Column="1"
-                Grid.ColumnSpan="2">
-                <Label
-                    Text="{StaticResource default12HourTime}"
-                    Style="{StaticResource labelStyle}"
-                    WidthRequest="100"
-                    Margin="5,5,0,0"/>
-                <Label
-                    Text="{StaticResource defaultDate}"
-                    Style="{StaticResource labelStyle}"
-                    Margin="5,5,0,0"/>
-            </HorizontalStackLayout>
+                Grid.ColumnSpan="2"/>
 
             <!-- work period duration info -->
             <Label
@@ -84,7 +89,7 @@
 
         <!-- timesheet layout -->
         <Grid
-            RowDefinitions="Auto,Auto"
+            RowDefinitions="Auto,Auto,*"
             ColumnDefinitions="Auto,Auto,Auto"
             Padding="5,10,5,0">
 
@@ -117,7 +122,7 @@
                 <!-- example break info -->
                 <Grid
                     RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                    ColumnDefinitions="80,100,230">
+                    ColumnDefinitions="80,100,280">
                     
                     <!-- top border -->
                     <BoxView
@@ -133,15 +138,11 @@
                         Margin="0,5,0,0"
                         Grid.Row="1" Grid.Column="0"/>
                     <Label
-                        Text="{StaticResource default12HourTime}"
+                        Text="{StaticResource defaultDateTime}"
                         Style="{StaticResource labelStyle}"
                         Margin="5,5,0,0"
-                        Grid.Row="1" Grid.Column="1"/>
-                    <Label
-                        Text="{StaticResource defaultDate}"
-                        Style="{StaticResource labelStyle}"
-                        Margin="10,5,0,0"
-                        Grid.Row="1" Grid.Column="2"/>
+                        Grid.Row="1" Grid.Column="1"
+                        Grid.ColumnSpan="2"/>
 
                     <!-- end time -->
                     <Label
@@ -151,28 +152,23 @@
                         Margin="0,5,0,0"
                         Grid.Row="2" Grid.Column="0"/>
                     <Label
-                        Text="{StaticResource default12HourTime}"
+                        Text="{StaticResource defaultDateTime}"
                         Style="{StaticResource labelStyle}"
                         Margin="5,5,0,0"
-                        Grid.Row="2" Grid.Column="1"/>
-                    <Label
-                        Text="{StaticResource defaultDate}"
-                        Style="{StaticResource labelStyle}"
-                        Margin="10,5,0,0"
-                        Grid.Row="2" Grid.Column="2"/>
+                        Grid.Row="2" Grid.Column="1"
+                        Grid.ColumnSpan="2"/>
 
                     <!-- description -->
                     <Border
-                        Stroke="Black"
-                        StrokeThickness="1"
-                        Padding="2,0,0,0"
+                        Style="{StaticResource descriptionBorderStyle}"
+                        WidthRequest="415"
                         Grid.Row="3" Grid.Column="0"
                         Grid.ColumnSpan="3">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="4,4,4,4"/>
                         </Border.StrokeShape>
                         <Label
-                            Text="{StaticResource stringM160Char}"
+                            Text="{StaticResource defaultBreakDescription}"
                             Style="{StaticResource descriptionLabelStyle}"
                             VerticalTextAlignment="Center"
                             WidthRequest="410"/>
@@ -194,6 +190,11 @@
                 Margin="5,0"
                 Grid.Row="0" Grid.Column="1"
                 Grid.RowSpan="2"/>
+            <BoxView
+                Style="{StaticResource verticalSeparatorStyle}"
+                Margin="5,0"
+                HeightRequest="400"
+                Grid.Row="2" Grid.Column="1"/>
 
             <!-- task controls -->
             <HorizontalStackLayout
@@ -224,7 +225,7 @@
                 <!-- example task info -->
                 <Grid
                     RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                    ColumnDefinitions="80,100,230">
+                    ColumnDefinitions="80,100,280">
 
                     <!-- top border -->
                     <BoxView
@@ -240,15 +241,11 @@
                         Margin="0,5,0,0"
                         Grid.Row="1" Grid.Column="0"/>
                     <Label
-                        Text="{StaticResource default12HourTime}"
+                        Text="{StaticResource defaultDateTime}"
                         Style="{StaticResource labelStyle}"
                         Margin="5,5,0,0"
-                        Grid.Row="1" Grid.Column="1"/>
-                    <Label
-                        Text="{StaticResource defaultDate}"
-                        Style="{StaticResource labelStyle}"
-                        Margin="10,5,0,0"
-                        Grid.Row="1" Grid.Column="2"/>
+                        Grid.Row="1" Grid.Column="1"
+                        Grid.ColumnSpan="2"/>
 
                     <!-- end time -->
                     <Label
@@ -258,35 +255,25 @@
                         Margin="0,5,0,0"
                         Grid.Row="2" Grid.Column="0"/>
                     <Label
-                        Text="{StaticResource default12HourTime}"
+                        Text="{StaticResource defaultDateTime}"
                         Style="{StaticResource labelStyle}"
                         Margin="5,5,0,0"
-                        Grid.Row="2" Grid.Column="1"/>
-                    <Label
-                        Text="{StaticResource defaultDate}"
-                        Style="{StaticResource labelStyle}"
-                        Margin="10,5,0,0"
-                        Grid.Row="2" Grid.Column="2"/>
+                        Grid.Row="2" Grid.Column="1"
+                        Grid.ColumnSpan="2"/>
 
                     <!-- description -->
                     <Border
-                        Stroke="Black"
-                        Padding="2,0,0,0"
+                        Style="{StaticResource descriptionBorderStyle}"
+                        WidthRequest="415"
                         Grid.Row="3" Grid.Column="0"
                         Grid.ColumnSpan="3">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="4,4,4,4"/>
-                        </Border.StrokeShape>
                         <Label
-                            Text="{StaticResource stringM160Char}"
+                            Text="{StaticResource defaultTaskDescription}"
                             Style="{StaticResource descriptionLabelStyle}"
-                            VerticalTextAlignment="Center"
-                            WidthRequest="410"
-                            Grid.Row="3" Grid.Column="0"
-                            Grid.ColumnSpan="3"/>
+                            WidthRequest="410"/>
                     </Border>
                     <Button
-                        Text="Edit Break Description"
+                        Text="Edit Task Description"
                         Style="{StaticResource buttonStyle}"
                         WidthRequest="275"
                         HorizontalOptions="Start"

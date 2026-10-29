@@ -9,10 +9,8 @@ namespace Clock_Watch_Time_Manager.Models
      */
     internal class WorkTask
     {
-        public TimeOnly? WorkTaskStartTime { get; private set; } = null;
-        public TimeOnly? WorkTaskEndTime { get; private set; } = null;
-        public DateOnly? WorkTaskStartDate { get; private set; } = null;
-        public DateOnly? WorkTaskEndDate { get; private set; } = null;
+        public DateTime? WorkTaskStartDateTime { get; set; } = null;
+        public DateTime? WorkTaskEndDateTime { get; set; } = null;
         public string? WorkTaskDescription { get; private set; } = null;
     }
 }

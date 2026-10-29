@@ -9,10 +9,8 @@ namespace Clock_Watch_Time_Manager.Models
      */
     internal class Break
     {
-        public TimeOnly? BreakStartTime { get; private set; } = null;
-        public TimeOnly? BreakEndTime { get; private set; } = null;
-        public DateOnly? BreakStartDate { get; private set; } = null;
-        public DateOnly? BreakEndDate { get; private set; } = null;
+        public DateTime? BreakStartDateTime { get; set; } = null;
+        public DateTime? BreakEndDateTime { get; set; } = null;
         public string? BreakDescription { get; private set; } = null;
     }
 }
