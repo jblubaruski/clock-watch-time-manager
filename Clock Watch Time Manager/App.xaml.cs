@@ -15,6 +15,7 @@ namespace Clock_Watch_Time_Manager
         {
             InitializeComponent();
 #if DEBUG
+            Debug.WriteLine("Called App()");
             Debug.WriteLine(catalog);
 #endif
         }

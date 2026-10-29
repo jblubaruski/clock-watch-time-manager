@@ -124,4 +124,20 @@ partial class CreateTimeCardViewModel : ObservableObject
     {
         return ClockOutEnabled;
     }
+
+    /*
+     * METHODS
+     */
+
+    /*
+     * Resets the view model to its base state
+     */
+    public void Reset()
+    {
+        TimeCardSavedNotifVisible = false;
+        ClockInEnabled = true;
+        ClockOutEnabled = false;
+        ClockInDateTime = DEFAULT_DATETIME;
+        TimeCard = new();
+    }
 }

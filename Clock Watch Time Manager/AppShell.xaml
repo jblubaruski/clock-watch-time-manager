@@ -9,10 +9,12 @@
     <TabBar>
         <ShellContent
             Title="Time Clock"
+            Icon="clock_8x.png"
             ContentTemplate="{DataTemplate local:Views.CreateTimeCardPage}"
             Route="CreateTimeCardPage"/>
         <ShellContent
             Title="Catalog"
+            Icon="box_8x.png"
             ContentTemplate="{DataTemplate local:Views.ShowTimeCardsPage}"
             Route="ShowTimeCardPage"/>
     </TabBar>

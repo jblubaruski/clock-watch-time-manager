@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="Clock Watch Time Manager/Clock Watch Time Manager.csproj" />
+  <Project Path="ClockWatchTimeManagerUnitTester/ClockWatchTimeManagerUnitTester.csproj" Id="c758c0cb-3228-407b-a737-67c6adb54f10" />
 </Solution>
