@@ -6,6 +6,9 @@ namespace Clock_Watch_Time_Manager.Models
 {
     internal class TimeCardCatalog
     {
+        /*
+         * Contains and manages a collection of time cards
+         */
         private List<TimeCard> Catalog { get; } = [];
 
         /*
@@ -13,9 +16,22 @@ namespace Clock_Watch_Time_Manager.Models
          */
         public void AddTimeCard(TimeCard timeCard)
         {
+            ArgumentNullException.ThrowIfNull(timeCard);
             Catalog.Add(timeCard);
         }
 
+        /*
+         * Returns a string representation of this catalog in the format:
+         * Time Cards:
+         * ********************
+         * <Time Card 1>
+         * --------------------
+         * <Time Card 2>
+         * --------------------
+         * ...
+         * --------------------
+         * <Time Card N>
+         */
         public override string ToString()
         {
             string str = "Time Cards:\n";

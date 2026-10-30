@@ -1,12 +1,15 @@
 ﻿using Clock_Watch_Time_Manager.Models.Logging;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("ClockWatchTimeManagerUnitTester")]
 
 namespace Clock_Watch_Time_Manager
 {
     public static class MauiProgram
     {
-        internal static readonly LogWriter LogWriter = new("_Clo\'ck\"Wa`t\\ch");
+        internal static readonly LogWriter LogWriter = new("Clock Watch Time Manager");
 
         public static MauiApp CreateMauiApp()
         {

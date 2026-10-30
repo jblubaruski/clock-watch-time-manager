@@ -140,4 +140,8 @@ partial class CreateTimeCardViewModel : ObservableObject
         ClockInDateTime = DEFAULT_DATETIME;
         TimeCard = new();
     }
+
+    /*
+     * Returns whether or not the time card on the page is empty
+     */
 }

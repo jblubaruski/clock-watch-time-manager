@@ -15,12 +15,28 @@ namespace Clock_Watch_Time_Manager.Models
         public DateTime? ClockInDateTime { get; set; } = null;
         public DateTime? ClockOutDateTime { get; set; } = null;
 
+        /*
+         * Returns a string representation of this time card in the format:
+         * 
+         * Clock in:  <ClockInDateTime.ToString()>
+         * Clock out: <ClockOutDateTime.ToString()>
+         * 
+         * if either ClockInDateTime or ClockOutDateTime are null,
+         * they should be represented with 20 hyphens.
+         */
         public override string ToString()
         {
             string str = "";
 
-            str += $"Clock in: {ClockInDateTime}\n";
-            str += $"Clock out: {ClockOutDateTime}";
+            if (ClockInDateTime == null)
+                str += $"Clock in:  {"".PadLeft(20, '-')}\n";
+            else
+                str += $"Clock in:  {ClockInDateTime}\n";
+
+            if (ClockOutDateTime == null)
+                str += $"Clock out: {"".PadLeft(20, '-')}";
+            else
+                str += $"Clock out: {ClockOutDateTime}";
 
             return str;
         }
