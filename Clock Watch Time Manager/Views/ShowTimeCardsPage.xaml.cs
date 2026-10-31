@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Clock_Watch_Time_Manager.Views;
+namespace ClockWatchTimeManager.Views;
 
 public partial class ShowTimeCardsPage : ContentPage
 {

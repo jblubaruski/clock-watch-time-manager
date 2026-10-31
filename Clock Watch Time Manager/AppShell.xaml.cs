@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Clock_Watch_Time_Manager
+namespace ClockWatchTimeManager
 {
     public partial class AppShell : Shell
     {

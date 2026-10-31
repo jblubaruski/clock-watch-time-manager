@@ -1,4 +1,4 @@
-﻿using Clock_Watch_Time_Manager.Models;
+﻿using ClockWatchTimeManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows.Input;
 
-namespace Clock_Watch_Time_Manager.ViewModels;
+namespace ClockWatchTimeManager.ViewModels;
 
 /*
  * View model for the create time card page

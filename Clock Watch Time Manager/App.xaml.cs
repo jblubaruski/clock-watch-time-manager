@@ -1,8 +1,8 @@
-﻿using Clock_Watch_Time_Manager.Models;
+﻿using ClockWatchTimeManager.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
-namespace Clock_Watch_Time_Manager
+namespace ClockWatchTimeManager
 {
     public partial class App : Application
     {

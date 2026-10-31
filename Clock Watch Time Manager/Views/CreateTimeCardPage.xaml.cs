@@ -1,6 +1,6 @@
-﻿using Clock_Watch_Time_Manager.ViewModels;
+﻿using ClockWatchTimeManager.ViewModels;
 using System.Diagnostics;
-namespace Clock_Watch_Time_Manager.Views;
+namespace ClockWatchTimeManager.Views;
 
 public partial class CreateTimeCardPage : ContentPage
 {

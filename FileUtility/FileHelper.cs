@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
-using System.Runtime.Intrinsics.X86;
 using System.Text;
 
-namespace Clock_Watch_Time_Manager.Services
+namespace FileUtility
 {
     /*
      * Helper class that contains methods that assist with file IO operations.
      */
-    internal static class FileHelper
+    public static class FileHelper
     {
+        public const int MAX_FILENAME_LENGTH = 255;
+        public const int MAX_FILEPATH_LENGTH = 32766;
         private const string INVALID_CHARACTERS_ANYWHERE = "? /\\%*:|\"<>,;=";
         private const string INVALID_DIRECTORY_CHARACTERS_ANYWHERE = "? %*:|\"<>,;=";
         private const string INVALID_CHARACTERS_ATSTART = "- _.";
@@ -22,10 +24,10 @@ namespace Clock_Watch_Time_Manager.Services
                 "LST", "KEYBD$", "SCREEN$", "$IDLE$", "CONFIG$", "$Mft", "$MftMirr", "$LogFile", "$Volume", 
                 "$AttrDef", "$Bitmap", "$Boot", "$BadClus", "$Secure", "$Upcase", "$Extend", "$Quota", "$ObjId", "$Reparse"
             ];
-        private static readonly System.Buffers.SearchValues<char> s_InvalidCharactersAnywhere = System.Buffers.SearchValues.Create(INVALID_CHARACTERS_ANYWHERE);
-        private static readonly System.Buffers.SearchValues<char> s_InvalidDirectoryCharactersAnywhere = System.Buffers.SearchValues.Create(INVALID_DIRECTORY_CHARACTERS_ANYWHERE);
-        private static readonly System.Buffers.SearchValues<char> s_InvalidCharactersAtStart = System.Buffers.SearchValues.Create(INVALID_CHARACTERS_ATSTART);
-        private static readonly System.Buffers.SearchValues<string> s_ReservedFilenames = System.Buffers.SearchValues.Create(ReservedFileNames, StringComparison.OrdinalIgnoreCase);
+        public static readonly System.Buffers.SearchValues<char> s_InvalidCharactersAnywhere = System.Buffers.SearchValues.Create(INVALID_CHARACTERS_ANYWHERE);
+        public static readonly System.Buffers.SearchValues<char> s_InvalidDirectoryCharactersAnywhere = System.Buffers.SearchValues.Create(INVALID_DIRECTORY_CHARACTERS_ANYWHERE);
+        public static readonly System.Buffers.SearchValues<char> s_InvalidCharactersAtStart = System.Buffers.SearchValues.Create(INVALID_CHARACTERS_ATSTART);
+        public static readonly System.Buffers.SearchValues<string> s_ReservedFilenames = System.Buffers.SearchValues.Create(ReservedFileNames, StringComparison.OrdinalIgnoreCase);
 
         /*
          * Returns true if the filepath formed by the passed in base filename, extension, and directory path is a valid filepath.
@@ -37,6 +39,19 @@ namespace Clock_Watch_Time_Manager.Services
         public static bool FilepathIsValid(string baseFilename, string extension, string directoryPath, out string errorMessage)
         {
             // TODO Write filepath validation logic
+            if (!FilenameIsValid(baseFilename, extension, out errorMessage))
+            {
+                return false;
+            }
+            else if (!DirectoryPathIsValid(directoryPath, out errorMessage))
+            {
+                return false;
+            }
+            else if (baseFilename.Length + extension.Length + directoryPath.Length > MAX_FILEPATH_LENGTH)
+            {
+                errorMessage = $"The combined length of baseFilename, extension and directoryPath cannot be greater than {MAX_FILEPATH_LENGTH}";
+                return false;
+            }
 
             errorMessage = "";
             return true;
@@ -50,7 +65,19 @@ namespace Clock_Watch_Time_Manager.Services
          */
         public static bool FilenameIsValid(string baseFilename, string extension, out string errorMessage)
         {
-            // TODO Write filename validation logic
+            if (!BaseFilenameIsValid(baseFilename, out errorMessage))
+            {
+                return false;
+            }
+            else if (!ExtensionIsValid(extension, out errorMessage))
+            {
+                return false;
+            }
+            else if (baseFilename.Length + extension.Length > MAX_FILENAME_LENGTH)
+            {
+                errorMessage = $"The combined length of baseFilename and extension cannot be greater than {MAX_FILENAME_LENGTH}";
+                return false;
+            }
 
             errorMessage = "";
             return true;
@@ -59,9 +86,9 @@ namespace Clock_Watch_Time_Manager.Services
         /*
          * Returns true if the passed in base filename is valid.
          * 
-         * It should not be a null pointer
-         * It should not be an empty string
-         * It should not be entirely whitespace
+         * It cannot not be a null pointer
+         * It cannot not be an empty string
+         * It cannot not be entirely whitespace
          * It cannot start with the characters: '-', ' ', '_', '.'
          * It cannot contain any of the following characters:
          * '?', ' ', '/', '\', '%', '*', ':', '|', '"', '<', '>', ',', ';', '='
@@ -110,9 +137,9 @@ namespace Clock_Watch_Time_Manager.Services
         /*
          * Returns true if the passed in file extension is valid.
          * 
-         * It should not be a null pointer
-         * It should not be an empty string
-         * It should not be entirely whitespace
+         * It cannot not be a null pointer
+         * It cannot not be an empty string
+         * It cannot not be entirely whitespace
          * It must start with a period
          * It should only have one period
          * It cannot contain any of the following characters:
@@ -164,22 +191,14 @@ namespace Clock_Watch_Time_Manager.Services
         /*
          * Returns true if the passed in directory path is valid.
          * 
-         * It should not be a null pointer
-         * It should not be an empty string
-         * It should not be entirely whitespace
-         * Directory names should not contain any of the following characters (except for the root):
-         * '?', ' ', '%', '*', ':', '|', '"', '<', '>', ',', ';', '='
-         * If the directory separator character is '\', a directory name cannot contain '/' and vice-versa
-         * It cannot contain a directory name with more than two periods in a row
-         * It cannot contain a directory name that starts with the characters: '-', ' ', '_', '.' (with the exception of names that are "." and "..")
-         * It cannot contian a directory name that ends with a period (with the exception of names that are "." and "..")
+         * It cannot not be a null pointer
+         * It cannot not be an empty string
+         * It cannot not be entirely whitespace
          * It can start with a root (<drive letter><volume separator><directory separator> or <directory separator>)
-         * If it stars with a root specifying a drive, the drive letter must be in the range of a-z or A-Z
+         * Each directory name contained in the path must be a valid directory name
          */
         public static bool DirectoryPathIsValid(string directoryPath, out string errorMessage)
         {
-            // TODO Write directoryPath validation logic
-            // run validation over whole directory path
             if (directoryPath == null)
             {
                 errorMessage = "directoryPath cannot be null";
@@ -196,47 +215,129 @@ namespace Clock_Watch_Time_Manager.Services
                 return false;
             }
 
-            // run validation over individual directory names
             string[] directoryNames = directoryPath.Split(Path.DirectorySeparatorChar);
-            
-            for (int i = 0; i < directoryNames.Length; i++)
+            int directoryNamesStartIndex = 0;
+
+            if (directoryNames[0].Length == 0)
             {
-                if (i == 0 && directoryNames[i].Contains(':'))
+                directoryNamesStartIndex = 1;
+            }
+            else if (directoryNames[0].Contains(Path.VolumeSeparatorChar))
+            {
+                directoryNamesStartIndex = 1;
+
+                if (!DriveIndicatorIsValid(directoryNames[0], out errorMessage))
+                    return false;
+            }
+            
+            for (int i = directoryNamesStartIndex; i < directoryNames.Length; i++)
+            {
+                if (directoryNames[i].Length == 0 && i != directoryNames.Length - 1)
                 {
-                    if (!char.IsAsciiLetter(directoryNames[i].ToCharArray()[0]))
-                    {
-                        errorMessage = "if the path includes a drive indicator, that indicator must reference a drive with an alphabetical name";
+                    if (!DirectoryNameIsValid(directoryNames[i], out errorMessage))
                         return false;
-                    }
                 }
-                else
+                else if (directoryNames[i].Length != 0)
                 {
-                    if (directoryNames[i].ContainsAny(s_InvalidDirectoryCharactersAnywhere))
-                    {
-                        errorMessage = $"directory names cannot be contain the characters: {INVALID_DIRECTORY_CHARACTERS_ANYWHERE}";
+                    if (!DirectoryNameIsValid(directoryNames[i], out errorMessage))
                         return false;
-                    }
-                    else if (directoryNames[i].Contains(Path.AltDirectorySeparatorChar))
-                    {
-                        errorMessage = "directory names cannot contain the alt directory separator";
-                        return false;
-                    }
-                    else if (directoryNames[i] != "." && directoryNames[i] != ".." && StringContainsOnlyCharacter(directoryNames[i], '.') && directoryNames[i].Count<char>('.') > 2)
-                    {
-                        errorMessage = "There cannot be more than two periods in a directory name that is not . or .. and is only composed of periods";
-                        return false;
-                    }
-                    else if (directoryNames[i] != "." && directoryNames[i] != ".." && directoryNames[i].ContainsAny(s_InvalidCharactersAtStart))
-                    {
-                        errorMessage = $"directory names cannot start with the characters: {INVALID_CHARACTERS_ATSTART}";
-                        return false;
-                    }
-                    else if (directoryNames[i] != "." && directoryNames[i] != ".." && directoryNames[i][^1..^0] == ".")
-                    {
-                        errorMessage = "A directory name that is not . or .. cannot end with a period";
-                        return false;
-                    }
                 }
+                
+            }
+
+            errorMessage = "";
+            return true;
+        }
+
+        /*
+         * Returns true if the passed in drive indicator is valid
+         * 
+         * It cannot not be a null pointer
+         * It must start with a single ascii letter character
+         * The next character must be a volume separator
+         * There cannot be any more characters after the volume separator
+         */
+        public static bool DriveIndicatorIsValid(string driveIndicator, out string errorMessage)
+        {
+            if (driveIndicator == null)
+            {
+                errorMessage = "directoryPath cannot be null";
+                return false;
+            }
+            else if (driveIndicator.Length != 2)
+            {
+                errorMessage = "driveIndicator must be exactly two characters in length";
+                return false;
+            }
+            else if (!char.IsAsciiLetter(driveIndicator.ToCharArray()[0]))
+            {
+                errorMessage = "driveIndicator must start with an ascii letter";
+                return false;
+            }
+            else if (driveIndicator.ToCharArray()[1] != Path.VolumeSeparatorChar)
+            {
+                errorMessage = "driveIndicator must end with a volume separator";
+                return false;
+            }
+
+            errorMessage = "";
+            return true;
+        }
+
+        /*
+         * Returns true if the passed in directory name is valid
+         * 
+         * It cannot not be a null pointer
+         * It cannot not be an empty string
+         * It cannot not be entirely whitespace
+         * It should not contain any of the following characters (except for the root):
+         * '?', ' ', '%', '*', ':', '|', '"', '<', '>', ',', ';', '='
+         * If the directory separator character is '\', a it cannot contain '/' and vice-versa
+         * It cannot contain be more than two periods in a row
+         * It cannot start with the characters: '-', ' ', '_', '.' (with the exception of names that are "." and "..")
+         * It cannot end with a period (with the exception of names that are "." and "..")
+         */
+        public static bool DirectoryNameIsValid(string directoryName, out string errorMessage)
+        {
+            if (directoryName == null)
+            {
+                errorMessage = "directoryName cannot be null";
+                return false;
+            }
+            else if (directoryName.Length == 0)
+            {
+                errorMessage = "directoryName cannot be an empty string";
+                return false;
+            }
+            else if (directoryName.IsWhiteSpace())
+            {
+                errorMessage = "directoryName cannot be entirely whitespace";
+                return false;
+            }
+            else if (directoryName.ContainsAny(s_InvalidDirectoryCharactersAnywhere))
+            {
+                errorMessage = $"directoryName cannot contain the characters: {INVALID_DIRECTORY_CHARACTERS_ANYWHERE}";
+                return false;
+            }
+            else if (directoryName.Contains(Path.AltDirectorySeparatorChar))
+            {
+                errorMessage = "directoryName cannot contain the alt directory separator";
+                return false;
+            }
+            else if (directoryName != "." && directoryName != ".." && StringContainsOnlyCharacter(directoryName, '.') && directoryName.Count<char>('.') > 2)
+            {
+                errorMessage = "There cannot be more than two periods in a directory name that is not . or .. and is only composed of periods";
+                return false;
+            }
+            else if (directoryName != "." && directoryName != ".." && directoryName.ContainsAny(s_InvalidCharactersAtStart))
+            {
+                errorMessage = $"directory names cannot start with the characters: {INVALID_CHARACTERS_ATSTART}";
+                return false;
+            }
+            else if (directoryName != "." && directoryName != ".." && directoryName[^1..^0] == ".")
+            {
+                errorMessage = "A directory name that is not . or .. cannot end with a period";
+                return false;
             }
 
             errorMessage = "";

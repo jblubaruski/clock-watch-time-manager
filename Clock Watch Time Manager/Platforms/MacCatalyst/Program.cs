@@ -1,7 +1,7 @@
 ﻿using ObjCRuntime;
 using UIKit;
 
-namespace Clock_Watch_Time_Manager
+namespace ClockWatchTimeManager.Platforms.MacCatalyst
 {
     public class Program
     {

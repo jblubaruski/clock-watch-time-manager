@@ -1,5 +1,4 @@
-﻿using Clock_Watch_Time_Manager.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -7,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace Clock_Watch_Time_Manager.Models.Logging;
+namespace ClockWatchTimeManager.Models.Logging;
 
 /*
  * Writes messages to a log file located at %MyDocuments%\PlaypenLogs\<ProgramName>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Clock_Watch_Time_Manager.Models
+namespace ClockWatchTimeManager.Models
 {
     /*
      * Represents a collection containing all the breaks and tasks taken and carried out during the work period.

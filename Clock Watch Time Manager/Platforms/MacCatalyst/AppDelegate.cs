@@ -1,6 +1,7 @@
-﻿using Foundation;
+﻿using ClockWatchTimeManager;
+using Foundation;
 
-namespace Clock_Watch_Time_Manager
+namespace ClockWatchTimeManager.Platforms.MacCatalyst
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

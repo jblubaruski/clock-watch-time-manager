@@ -1,4 +1,4 @@
-﻿using Clock_Watch_Time_Manager.Models;
+﻿using ClockWatchTimeManager.Models;
 
 namespace ClockWatchTimeManagerUnitTester
 {

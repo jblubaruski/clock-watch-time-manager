@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Clock Watch Time Manager\Clock Watch Time Manager.csproj" />
+    <ProjectReference Include="..\Clock Watch Time Manager\ClockWatchTimeManager.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Fakes\Models\Logging\" />
+    <Folder Include="Fakes\Models\" />
   </ItemGroup>
 
 </Project>

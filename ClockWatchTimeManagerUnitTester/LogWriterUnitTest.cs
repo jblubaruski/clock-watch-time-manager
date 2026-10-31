@@ -1,4 +1,4 @@
-﻿using Clock_Watch_Time_Manager.Models.Logging;
+﻿using ClockWatchTimeManager.Models.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;

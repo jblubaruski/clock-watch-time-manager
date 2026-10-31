@@ -1,11 +1,12 @@
-﻿using Clock_Watch_Time_Manager.Models.Logging;
+﻿using ClockWatchTimeManager;
+using ClockWatchTimeManager.Models.Logging;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("ClockWatchTimeManager.Tests")]
 
-namespace Clock_Watch_Time_Manager
+namespace ClockWatchTimeManager
 {
     public static class MauiProgram
     {
