@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("ClockWatchTimeManagerUnitTester")]
+[assembly: InternalsVisibleTo("ClockWatchTimeManager.Tests")]
 
 namespace Clock_Watch_Time_Manager
 {
