@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClockWatchTimeManagerUnitTester
+namespace ClockWatchTimeManager.Test
 {
     public class LogWriterUnitTest
     {
@@ -40,11 +40,26 @@ namespace ClockWatchTimeManagerUnitTester
             Assert.Throws<ArgumentException>(() => new LogWriter(testName));
         }
         [Theory]
-        [InlineData('|')] [InlineData('#')] [InlineData('%')]  [InlineData('&')]
-        [InlineData('{')] [InlineData('}')] [InlineData('\\')] [InlineData('<')]
-        [InlineData('>')] [InlineData('*')] [InlineData('?')]  [InlineData('/')]
-        [InlineData('$')] [InlineData('!')] [InlineData('\'')] [InlineData('"')]
-        [InlineData(':')] [InlineData('@')] [InlineData('+')]  [InlineData('`')]
+        [InlineData('|')]
+        [InlineData('#')]
+        [InlineData('%')]
+        [InlineData('&')]
+        [InlineData('{')]
+        [InlineData('}')]
+        [InlineData('\\')]
+        [InlineData('<')]
+        [InlineData('>')]
+        [InlineData('*')]
+        [InlineData('?')]
+        [InlineData('/')]
+        [InlineData('$')]
+        [InlineData('!')]
+        [InlineData('\'')]
+        [InlineData('"')]
+        [InlineData(':')]
+        [InlineData('@')]
+        [InlineData('+')]
+        [InlineData('`')]
         [InlineData('=')]
         public void Constructor_StringHasInvalidChar_ThrowArgumentException(char input)
         {
@@ -64,7 +79,7 @@ namespace ClockWatchTimeManagerUnitTester
             bool testFileExists = File.Exists(Path.Combine(expectedLogDirectory, expectedFileName));
 
             Assert.True(testFileExists);
-            
+
             if (testFileExists)
             {
                 File.Delete(Path.Combine(expectedLogDirectory, expectedFileName));

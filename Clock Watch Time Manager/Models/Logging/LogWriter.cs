@@ -47,8 +47,11 @@ internal class LogWriter
             throw new ArgumentException(errorMessage);
 
         string baseFilename = LOG_FILENAME_LEFTSIDE + programName.ToLower().Replace(" ", "");
-        if (!FileHelper.FilenameIsValid(baseFilename, LOG_FILENAME_EXTENSION, out errorMessage))
-            throw new ArgumentException(errorMessage);
+        
+        // TODO finish filepath validation
+
+        //if (!FileHelper.FilenameIsValid(baseFilename, LOG_FILENAME_EXTENSION, out errorMessage))
+            //throw new ArgumentException(errorMessage);
 
         ProgramLogsDirectory = Path.Combine
                                 (
