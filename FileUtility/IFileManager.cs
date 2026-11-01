@@ -5,15 +5,16 @@ using System.Text;
 namespace FileUtility
 {
     /*
-     * Defines the behavior of a class that manages a specific filepath.
+     * Defines the behavior of a class that manages and carries out operations on a file at a specific filepath.
      */
     public interface IFileManager
     {
-        abstract static IFileManager CreateFile(string filepath, bool isOpenOnSetup);
-        public void Open(FileMode fileMode, FileAccess fileAccess, FileShare fileShare);
+        public void Open(FileAccess fileAccess, FileShare fileShare);
         public void Close();
-        public void Copy(string newFilename, string newDirectoryPath);
-        public void Move(string newDirectoryPath);
+        public void Rename(string baseFilename);
+        public IFileManager Copy(string baseFilename);
+        public IFileManager Copy(string baseFilename, string directoryPath);
+        public void Move(string directoryPath);
         public void Delete();
         public bool FileExists();
         public bool IsOpen();
