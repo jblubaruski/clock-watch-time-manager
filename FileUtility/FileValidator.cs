@@ -7,7 +7,7 @@ using System.Text;
 namespace FileUtility
 {
     /*
-     * Helper class that contains methods that assist with file IO operations.
+     * Contains methods that validates filepaths and their components.
      */
     public static class FileValidator
     {
