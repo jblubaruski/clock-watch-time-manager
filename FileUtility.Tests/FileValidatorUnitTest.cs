@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FileUtility.Tests
 {
-    public class FileHelperUnitTest
+    public class FileValidatorUnitTest
     {
         /*
          * Tests for DirectoryPathIsValid(string, out string)
@@ -24,56 +24,56 @@ namespace FileUtility.Tests
         public void DirectoryPathIsValid_InvalidDirectoryName_ReturnFalse()
         {
             string input = "...";
-            bool result = FileHelper.DirectoryPathIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryPathIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryPathIsValid_InvalidDriveIndicator_ReturnFalse()
         {
             string input = "1" + Path.VolumeSeparatorChar + Path.DirectorySeparatorChar;
-            bool result = FileHelper.DirectoryPathIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryPathIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryPathIsValid_NullPointer_ReturnFalse()
         {
             string input = null!;
-            bool result = FileHelper.DirectoryPathIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryPathIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryPathIsValid_EmptyString_ReturnFalse()
         {
             string input = "";
-            bool result = FileHelper.DirectoryPathIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryPathIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryPathIsValid_WhitespaceString_ReturnFalse()
         {
             string input = " ";
-            bool result = FileHelper.DirectoryPathIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryPathIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryPathIsValid_ValidPathStartsWithValidDriveIndicator_ReturnTrue()
         {
             string input = "A:" + Path.DirectorySeparatorChar + "a";
-            bool result = FileHelper.DirectoryPathIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryPathIsValid(input, out string errorMessage);
             Assert.True(result);
         }
         [Fact]
         public void DirectoryPathIsValid_ValidPathStartsWithDirectorySeparator_ReturnTrue()
         {
             string input = Path.DirectorySeparatorChar + "a";
-            bool result = FileHelper.DirectoryPathIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryPathIsValid(input, out string errorMessage);
             Assert.True(result);
         }
         [Fact]
         public void DirectoryPathIsValid_ValidPathStartsWithDirectory_ReturnTrue()
         {
             string input = "a" + Path.DirectorySeparatorChar + "b";
-            bool result = FileHelper.DirectoryPathIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryPathIsValid(input, out string errorMessage);
             Assert.True(result);
         }
 
@@ -90,7 +90,7 @@ namespace FileUtility.Tests
         public void DriveIndicatorIsValid_NullPointer_ReturnFalse()
         {
             string input = null!;
-            bool result = FileHelper.DriveIndicatorIsValid(input, out string errorMessage);
+            bool result = FileValidator.DriveIndicatorIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Theory]
@@ -99,28 +99,28 @@ namespace FileUtility.Tests
         public void DriveIndicatorIsValid_MoreThanTwoCharacters_ReturnFalse(string input)
         {
             input = input + Path.VolumeSeparatorChar;
-            bool result = FileHelper.DriveIndicatorIsValid(input, out string errorMessage);
+            bool result = FileValidator.DriveIndicatorIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DriveIndicatorIsValid_InvalidFirstCharacter_ReturnFalse()
         {
             string input = "1" + Path.VolumeSeparatorChar;
-            bool result = FileHelper.DriveIndicatorIsValid(input, out string errorMessage);
+            bool result = FileValidator.DriveIndicatorIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DriveIndicatorIsValid_InvalidSecondCharacter_ReturnFalse()
         {
             string input = "AB";
-            bool result = FileHelper.DriveIndicatorIsValid(input, out string errorMessage);
+            bool result = FileValidator.DriveIndicatorIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DriveIndicatorIsValid_ValidDriveIndicator_ReturnTrue()
         {
             string input = "A" + Path.VolumeSeparatorChar;
-            bool result = FileHelper.DriveIndicatorIsValid(input, out string errorMessage);
+            bool result = FileValidator.DriveIndicatorIsValid(input, out string errorMessage);
             Assert.True(result);
         }
 
@@ -142,21 +142,21 @@ namespace FileUtility.Tests
         public void DirectoryNameIsValid_NullPointer_ReturnFalse()
         {
             string input = null!;
-            bool result = FileHelper.DirectoryNameIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryNameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryNameIsValid_EmptyString_ReturnFalse()
         {
             string input = "";
-            bool result = FileHelper.DirectoryNameIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryNameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryNameIsValid_WhitespaceString_ReturnFalse()
         {
             string input = " ";
-            bool result = FileHelper.DirectoryNameIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryNameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Theory]
@@ -174,21 +174,21 @@ namespace FileUtility.Tests
         [InlineData("a=")]
         public void DirectoryNameIsValid_NameContainsInvalidCharacter_ReturnFalse(string input)
         {
-            bool result = FileHelper.DirectoryNameIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryNameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryNameIsValid_NameContainsAltDirectorySeparator_ReturnFalse()
         {
             string input = "a" + Path.AltDirectorySeparatorChar;
-            bool result = FileHelper.DirectoryNameIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryNameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryNameIsValid_NameContainsMoreThanTwoPeriods_ReturnFalse()
         {
             string input = "...";
-            bool result = FileHelper.DirectoryNameIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryNameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Theory]
@@ -198,21 +198,21 @@ namespace FileUtility.Tests
         [InlineData(".a")]
         public void DirectoryNameIsValid_NameHasInvalidStart_ReturnFalse(string input)
         {
-            bool result = FileHelper.DirectoryNameIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryNameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryNameIsValid_NameEndsWithPeriod_ReturnFalse()
         {
             string input = "a.";
-            bool result = FileHelper.DirectoryNameIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryNameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void DirectoryNameIsValid_ValidName_ReturnTrue()
         {
             string input = "a";
-            bool result = FileHelper.DirectoryNameIsValid(input, out string errorMessage);
+            bool result = FileValidator.DirectoryNameIsValid(input, out string errorMessage);
             Assert.True(result);
         }
 
@@ -233,42 +233,42 @@ namespace FileUtility.Tests
         public void ExtensionIsValid_NullPointer_ReturnFalse()
         {
             string input = null!;
-            bool result = FileHelper.ExtensionIsValid(input, out string errorMessage);
+            bool result = FileValidator.ExtensionIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void ExtensionIsValid_EmptyString_ReturnFalse()
         {
             string input = "";
-            bool result = FileHelper.ExtensionIsValid(input, out string errorMessage);
+            bool result = FileValidator.ExtensionIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void ExtensionIsValid_WhitespaceString_ReturnFalse()
         {
             string input = " ";
-            bool result = FileHelper.ExtensionIsValid(input, out string errorMessage);
+            bool result = FileValidator.ExtensionIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void ExtensionIsValid_ExtensionDoesntStartWithPeriod_ReturnFalse()
         {
             string input = "a";
-            bool result = FileHelper.ExtensionIsValid(input, out string errorMessage);
+            bool result = FileValidator.ExtensionIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void ExtensionIsValid_ExtensionOnlyHasPeriod_ReturnFalse()
         {
             string input = ".";
-            bool result = FileHelper.ExtensionIsValid(input, out string errorMessage);
+            bool result = FileValidator.ExtensionIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void ExtensionIsValid_ExtensionHasMultiplePeriods_ReturnFalse()
         {
             string input = "..a";
-            bool result = FileHelper.ExtensionIsValid(input, out string errorMessage);
+            bool result = FileValidator.ExtensionIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Theory]
@@ -288,14 +288,14 @@ namespace FileUtility.Tests
         [InlineData(".=")]
         public void ExtensionIsValid_ExtensionHasInvalidCharacter_ReturnFalse(string input)
         {
-            bool result = FileHelper.ExtensionIsValid(input, out string errorMessage);
+            bool result = FileValidator.ExtensionIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void ExtensionIsValid_ValidExtension_ReturnTrue()
         {
             string input = ".a";
-            bool result = FileHelper.ExtensionIsValid(input, out string errorMessage);
+            bool result = FileValidator.ExtensionIsValid(input, out string errorMessage);
             Assert.True(result);
         }
 
@@ -318,21 +318,21 @@ namespace FileUtility.Tests
         public void BaseFilenameIsValid_NullPointer_ReturnFalse()
         {
             string input = null!;
-            bool result = FileHelper.BaseFilenameIsValid(input, out string errorMessage);
+            bool result = FileValidator.BaseFilenameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void BaseFilenameIsValid_EmptyString_ReturnFalse()
         {
             string input = "";
-            bool result = FileHelper.BaseFilenameIsValid(input, out string errorMessage);
+            bool result = FileValidator.BaseFilenameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void BaseFilenameIsValid_WhitespaceString_ReturnFalse()
         {
             string input = " ";
-            bool result = FileHelper.BaseFilenameIsValid(input, out string errorMessage);
+            bool result = FileValidator.BaseFilenameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Theory]
@@ -342,7 +342,7 @@ namespace FileUtility.Tests
         [InlineData(".a")]
         public void BaseFilenameIsValid_NameHasInvalidStart_ReturnFalse(string input)
         {
-            bool result = FileHelper.BaseFilenameIsValid(input, out string errorMessage);
+            bool result = FileValidator.BaseFilenameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Theory]
@@ -362,7 +362,7 @@ namespace FileUtility.Tests
         [InlineData("a=")]
         public void BaseFilenameIsValid_NameContainsInvalidCharacters_ReturnFalse(string input)
         {
-            bool result = FileHelper.BaseFilenameIsValid(input, out string errorMessage);
+            bool result = FileValidator.BaseFilenameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Theory]
@@ -414,14 +414,14 @@ namespace FileUtility.Tests
         [InlineData("$Reparse")]
         public void BaseFilenameIsValid_NameMatchesReservedName_ReturnFalse(string input)
         {
-            bool result = FileHelper.BaseFilenameIsValid(input, out string errorMessage);
+            bool result = FileValidator.BaseFilenameIsValid(input, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
         public void BaseFilenameIsValid_ValidName_ReturnTrue()
         {
             string input = "a";
-            bool result = FileHelper.BaseFilenameIsValid(input, out string errorMessage);
+            bool result = FileValidator.BaseFilenameIsValid(input, out string errorMessage);
             Assert.True(result);
         }
 
@@ -439,7 +439,7 @@ namespace FileUtility.Tests
             string baseFilename = "-a";
             string extension = ".a";
 
-            bool result = FileHelper.FilenameIsValid(baseFilename, extension, out string errorMessage);
+            bool result = FileValidator.FilenameIsValid(baseFilename, extension, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
@@ -447,7 +447,7 @@ namespace FileUtility.Tests
         {
             string baseFilename = "a";
             string extension = ".?";
-            bool result = FileHelper.FilenameIsValid(baseFilename, extension!, out string errorMessage);
+            bool result = FileValidator.FilenameIsValid(baseFilename, extension!, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
@@ -457,7 +457,7 @@ namespace FileUtility.Tests
             string extension = ".a";
             string baseFilename = "".PadLeft(MAX_FILENAME_LENGTH + 1 - extension.Length);
 
-            bool result = FileHelper.FilenameIsValid(baseFilename, extension, out string errorMessage);
+            bool result = FileValidator.FilenameIsValid(baseFilename, extension, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
@@ -466,7 +466,7 @@ namespace FileUtility.Tests
             string baseFilename = "a";
             string extension = ".a";
 
-            bool result = FileHelper.FilenameIsValid(baseFilename, extension, out string errorMessage);
+            bool result = FileValidator.FilenameIsValid(baseFilename, extension, out string errorMessage);
             Assert.True(result);
         }
 
@@ -485,7 +485,7 @@ namespace FileUtility.Tests
             string baseFilename = "-a";
             string extension = ".a";
             string directoryPath = Path.DirectorySeparatorChar + "a";
-            bool result = FileHelper.FilepathIsValid(baseFilename!, extension, directoryPath, out string errorMessage);
+            bool result = FileValidator.FilepathIsValid(baseFilename!, extension, directoryPath, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
@@ -494,7 +494,7 @@ namespace FileUtility.Tests
             string baseFilename = "a";
             string extension = "a";
             string directoryPath = Path.DirectorySeparatorChar + "a";
-            bool result = FileHelper.FilepathIsValid(baseFilename, extension!, directoryPath, out string errorMessage);
+            bool result = FileValidator.FilepathIsValid(baseFilename, extension!, directoryPath, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
@@ -503,7 +503,7 @@ namespace FileUtility.Tests
             string baseFilename = "a";
             string extension = "a";
             string directoryPath = Path.DirectorySeparatorChar + "a?";
-            bool result = FileHelper.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
+            bool result = FileValidator.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
@@ -513,7 +513,7 @@ namespace FileUtility.Tests
             string extension = ".a";
             string directoryPath = null!;
 
-            bool result = FileHelper.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
+            bool result = FileValidator.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
@@ -523,7 +523,7 @@ namespace FileUtility.Tests
             string extension = ".a";
             string directoryPath = Path.DirectorySeparatorChar + "a" + Path.AltDirectorySeparatorChar;
 
-            bool result = FileHelper.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
+            bool result = FileValidator.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
@@ -534,7 +534,7 @@ namespace FileUtility.Tests
             string extension = ".a";
             string baseFilename = "".PadLeft(MAX_PATH_LENGTH + 1 - directoryPath.Length - extension.Length);
 
-            bool result = FileHelper.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
+            bool result = FileValidator.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
             Assert.False(result);
         }
         [Fact]
@@ -544,7 +544,7 @@ namespace FileUtility.Tests
             string extension = ".a";
             string directoryPath = "a" + Path.DirectorySeparatorChar;
 
-            bool result = FileHelper.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
+            bool result = FileValidator.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage);
             Assert.True(result);
         }
     }

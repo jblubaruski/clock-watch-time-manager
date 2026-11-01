@@ -9,7 +9,7 @@ namespace FileUtility
     /*
      * Helper class that contains methods that assist with file IO operations.
      */
-    public static class FileHelper
+    public static class FileValidator
     {
         public const int MAX_FILENAME_LENGTH = 255;
         public const int MAX_FILEPATH_LENGTH = 32766;
@@ -242,7 +242,6 @@ namespace FileUtility
                     if (!DirectoryNameIsValid(directoryNames[i], out errorMessage))
                         return false;
                 }
-                
             }
 
             errorMessage = "";
