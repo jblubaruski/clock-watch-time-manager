@@ -31,6 +31,8 @@ namespace FileUtility.Text
         public void WriteToFile(string toWrite)
         {
             ArgumentNullException.ThrowIfNull(toWrite);
+
+            // TODO write write logic
         }
 
         /*
@@ -39,6 +41,8 @@ namespace FileUtility.Text
         public void AppendToFile(string toAppend)
         {
             ArgumentNullException.ThrowIfNull(toAppend);
+
+            // TODO write append logic
         }
     }
 }
