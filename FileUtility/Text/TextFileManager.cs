@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace FileUtility.Text
@@ -9,11 +10,11 @@ namespace FileUtility.Text
      */
     public class TextFileManager : IFileManager
     {
-        private const string EXTENSION = ".txt";
-        private string Filepath { get; set; }
-        private string DirectoryPath { get; set; }
-        public IFileReader? Reader { get; private set; }
-        public IFileWriter? Writer { get; private set; }
+        protected const string EXTENSION = ".txt";
+        protected string Filepath { get; set; }
+        protected string DirectoryPath { get; set; }
+        protected StreamReader? Reader { get; set; }
+        protected StreamWriter? Writer { get; set; }
 
         /*
          * Validates the passed in filepath and creates a file at that location while creating a directory if needed.
@@ -22,7 +23,7 @@ namespace FileUtility.Text
          * directoryPath is the path to the directory where the file is located
          * if open is true, the filestream isnt closed after creation and a reader and writer is constructed.
          */
-        public TextFileManager(string baseFilename, string directoryPath, bool open = false)
+        public TextFileManager(string baseFilename, string directoryPath)
         {
             if (!FileValidator.FilepathIsValid(baseFilename, EXTENSION, directoryPath, out string errorMessage))
                 throw new ArgumentException(errorMessage);
@@ -35,19 +36,29 @@ namespace FileUtility.Text
 
             FileStream fs = File.Create(Filepath);
 
-            // keep the streams open
-            if (open)
-            {
-                Reader = TextFileReader.CreateReader(fs);
-                Writer = TextFileWriter.CreateWriter(fs);
-            }
-            // close the streams
-            else
-            {
-                fs.Close();
-                Reader = null;
-                Writer = null;
-            }
+            fs.Close();
+            Reader = null;
+            Writer = null;
+        }
+
+        /*
+         * Returns true if this file exists on the file system
+         */
+        public bool FileExists() => File.Exists(Filepath);
+
+        /*
+         * Returns true if this file has open filestreams associated with it
+         */
+        public bool IsOpen()
+        {
+            bool isOpen = Reader != null || Writer != null;
+
+            if (Reader != null)
+                isOpen = Reader.BaseStream.CanRead || Reader.BaseStream.CanWrite;
+            if (Writer != null)
+                isOpen = Writer.BaseStream.CanRead || Writer.BaseStream.CanWrite;
+
+            return isOpen;
         }
 
         /*
@@ -74,6 +85,16 @@ namespace FileUtility.Text
         public void Close()
         {
             // TODO write close logic
+            if (!IsOpen())
+                throw new InvalidOperationException("the file cannot be closed when this method is called");
+            else if (!FileExists())
+                throw new InvalidOperationException("the file must exist on the file system in order to close it");
+
+            Reader?.Close();
+            Writer?.Close();
+
+            Reader = null;
+            Writer = null;
         }
 
         /*
@@ -143,23 +164,51 @@ namespace FileUtility.Text
         }
 
         /*
-         * Returns true if this file exists on the file system
+         * Reads and returns the entire file
+         * 
+         * Throws an InvalidOperationException if the file is closed
          */
-        public bool FileExists()
+        public string ReadFile()
         {
-            // TODO write check logic
+            // TODO Write read logic
 
+            return "";
+        }
+
+        /*
+         * Reads and outputs a single line from the file
+         * Returns true if there was a line to read
+         * 
+         * Throws an InvalidOperationException if the file is closed
+         */
+        public bool ReadLine(out string output)
+        {
+            // TODO Write read logic
+
+            output = "";
             return false;
         }
 
         /*
-         * Returns true if this file has open filestreams associated with it
+         * Overwrites the file with the passed in string
+         * 
+         * Throws an InvalidOperationException if the file is closed
          */
-        public bool IsOpen()
+        public void WriteToFile(string toWrite)
         {
-            // TODO write check logic
+            ArgumentNullException.ThrowIfNull(toWrite);
 
-            return false;
+            // TODO write write logic
+        }
+
+        /*
+         * Appends the passed in string to the end of the file
+         */
+        public void AppendToFile(string toAppend)
+        {
+            ArgumentNullException.ThrowIfNull(toAppend);
+
+            // TODO write append logic
         }
     }
 }

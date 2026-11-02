@@ -328,7 +328,7 @@ namespace FileUtility
                 errorMessage = "There cannot be more than two periods in a directory name that is not . or .. and is only composed of periods";
                 return false;
             }
-            else if (directoryName != "." && directoryName != ".." && directoryName.ContainsAny(s_InvalidCharactersAtStart))
+            else if (directoryName != "." && directoryName != ".." && directoryName.Substring(0, 1).ContainsAny(s_InvalidCharactersAtStart))
             {
                 errorMessage = $"directory names cannot start with the characters: {INVALID_CHARACTERS_ATSTART}";
                 return false;
