@@ -18,9 +18,5 @@ namespace FileUtility
         public void Delete();
         public bool FileExists();
         public bool IsOpen();
-        public string ReadFile();
-        public bool ReadLine(out string output);
-        public void WriteToFile(string toWrite);
-        public void AppendToFile(string toAppend);
     }
 }

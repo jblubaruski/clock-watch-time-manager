@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace FileUtility.Text
+namespace FileUtility
 {
     /*
      * Encapsulates a filepath representing the location of a text file while carrying out operations on and managing the file's state.
      */
-    public class TextFileManager : IFileManager
+    public abstract class FileManager : IFileManager
     {
-        protected const string EXTENSION = ".txt";
         protected string Filepath { get; set; }
         protected string DirectoryPath { get; set; }
         protected StreamReader? Reader { get; set; }
@@ -23,12 +22,12 @@ namespace FileUtility.Text
          * directoryPath is the path to the directory where the file is located
          * if open is true, the filestream isnt closed after creation and a reader and writer is constructed.
          */
-        public TextFileManager(string baseFilename, string directoryPath)
+        public FileManager(string baseFilename, string extension, string directoryPath)
         {
-            if (!FileValidator.FilepathIsValid(baseFilename, EXTENSION, directoryPath, out string errorMessage))
+            if (!FileValidator.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage))
                 throw new ArgumentException(errorMessage);
 
-            Filepath = Path.Combine(directoryPath, baseFilename) + EXTENSION;
+            Filepath = Path.Combine(directoryPath, baseFilename) + extension;
             DirectoryPath = directoryPath;
 
             if (!Directory.Exists(directoryPath))

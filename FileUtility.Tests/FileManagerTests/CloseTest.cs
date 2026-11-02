@@ -19,9 +19,9 @@ namespace FileUtility.Tests.TextFileManagerTests
         public void Close_FileClosed_ThrowInvalidOperationException()
         {
             string testID = Guid.NewGuid().ToString();
-            string directoryPath = DerivedTextFileManager.TESTING_TEMP_DIRECTORY + testID;
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
 
-            DerivedTextFileManager testManager = new(directoryPath);
+            FileManager_Test testManager = new(directoryPath);
 
             Assert.Throws<InvalidOperationException>(testManager.Close);
 
@@ -31,11 +31,11 @@ namespace FileUtility.Tests.TextFileManagerTests
         public void Close_FileDoesNotExist_ThrowInvalidOperationException()
         {
             string testID = Guid.NewGuid().ToString();
-            string directoryPath = DerivedTextFileManager.TESTING_TEMP_DIRECTORY + testID;
-            string filename = DerivedTextFileManager.TESTING_TEMP_FILENAME + DerivedTextFileManager.TESTING_EXTENSION;
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
+            string filename = FileManager_Test.TESTING_TEMP_FILENAME + FileManager_Test.TESTING_EXTENSION;
             FileAccess fileAccess = FileAccess.ReadWrite;
 
-            DerivedTextFileManager testManager = new(directoryPath, fileAccess);
+            FileManager_Test testManager = new(directoryPath, fileAccess);
             File.Delete(Path.Combine(directoryPath, filename));
 
             Assert.Throws<InvalidOperationException>(testManager.Close);
@@ -46,11 +46,11 @@ namespace FileUtility.Tests.TextFileManagerTests
         public void Close_FileLeftOpen_FileIsClosed()
         {
             string testID = Guid.NewGuid().ToString();
-            string directoryPath = DerivedTextFileManager.TESTING_TEMP_DIRECTORY + testID;
-            string filename = DerivedTextFileManager.TESTING_TEMP_FILENAME + DerivedTextFileManager.TESTING_EXTENSION;
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
+            string filename = FileManager_Test.TESTING_TEMP_FILENAME + FileManager_Test.TESTING_EXTENSION;
             FileAccess fileAccess = FileAccess.ReadWrite;
 
-            DerivedTextFileManager testManager = new(directoryPath, fileAccess);
+            FileManager_Test testManager = new(directoryPath, fileAccess);
             bool result = true;
             try
             {

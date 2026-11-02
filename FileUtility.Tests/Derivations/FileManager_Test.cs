@@ -1,5 +1,4 @@
-﻿using FileUtility.Text;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,7 +10,7 @@ namespace FileUtility.Tests.Derivations
      * Exposes the streamreader and streamwriter from the encapsulated file.
      * Contains testing filepaths.
      */
-    internal class DerivedTextFileManager : TextFileManager
+    internal class FileManager_Test : FileManager
     {
         public const string TESTING_TEMP_DIRECTORY = "D:\\PlaypenTesting\\FileUtility\\ConstructorTest\\TestTempDir";
         public const string TESTING_READ_DIRECTORY = "D:\\PlaypenTesting\\FileUtility\\ConstructorTest\\TestReadDir";
@@ -23,14 +22,14 @@ namespace FileUtility.Tests.Derivations
         public StreamWriter? ExposedWriter { get; }
 
         // constructor that creates a file named test_temp.txt in the passed in directory
-        public DerivedTextFileManager(string directoryPath) : base(TESTING_TEMP_FILENAME, directoryPath)
+        public FileManager_Test(string directoryPath) : base(TESTING_TEMP_FILENAME, TESTING_EXTENSION, directoryPath)
         {
             ExposedReader = Reader;
             ExposedWriter = Writer;
         }
 
         // constructor that creates a file named test_temp.txt in the passed in directory and reopens the file with the passed in FileAccess
-        public DerivedTextFileManager(string directoryPath, FileAccess fileAccess) : base(TESTING_TEMP_FILENAME, directoryPath)
+        public FileManager_Test(string directoryPath, FileAccess fileAccess) : base(TESTING_TEMP_FILENAME, TESTING_EXTENSION, directoryPath)
         {
             FileStream fs = File.Open(Filepath, FileMode.Open, fileAccess);
 
@@ -53,7 +52,7 @@ namespace FileUtility.Tests.Derivations
         }
 
         // constructor that creates a file named {baseFilename}.txt in the passed in directory
-        public DerivedTextFileManager(string baseFilename, string directoryPath) : base(baseFilename, directoryPath)
+        public FileManager_Test(string baseFilename, string directoryPath) : base(baseFilename, TESTING_EXTENSION, directoryPath)
         {
             ExposedReader = Reader;
             ExposedWriter = Writer;

@@ -1,6 +1,5 @@
 ﻿using FileUtility.Tests.Derivations;
 using FileUtility.Tests.Services;
-using FileUtility.Text;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,16 +26,16 @@ namespace FileUtility.Tests.TextFileManagerTests
 
             Assert.Throws<ArgumentException>
                 (
-                    () => new DerivedTextFileManager(baseFilename, directoryPath)
+                    () => new FileManager_Test(baseFilename, directoryPath)
                 );
         }
         [Fact]
         public void Constructor_ValidInput_DirectoryCreated()
         {
             string testID = Guid.NewGuid().ToString();
-            string directoryPath = DerivedTextFileManager.TESTING_TEMP_DIRECTORY + testID;
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
 
-            DerivedTextFileManager testManager = new(directoryPath);
+            FileManager_Test testManager = new(directoryPath);
             bool result = Directory.Exists(directoryPath);
             TestServices.RunTestCleanup(testManager, directoryPath);
 
@@ -46,10 +45,10 @@ namespace FileUtility.Tests.TextFileManagerTests
         public void Constructor_ValidInput_FileCreated()
         {
             string testID = Guid.NewGuid().ToString();
-            string directoryPath = DerivedTextFileManager.TESTING_TEMP_DIRECTORY + testID;
-            string filename = DerivedTextFileManager.TESTING_TEMP_FILENAME + DerivedTextFileManager.TESTING_EXTENSION;
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
+            string filename = FileManager_Test.TESTING_TEMP_FILENAME + FileManager_Test.TESTING_EXTENSION;
 
-            DerivedTextFileManager testManager = new(directoryPath);
+            FileManager_Test testManager = new(directoryPath);
             bool result = File.Exists(Path.Combine(directoryPath, filename));
             TestServices.RunTestCleanup(testManager, directoryPath);
 
@@ -59,10 +58,10 @@ namespace FileUtility.Tests.TextFileManagerTests
         public void Constructor_ValidInput_FileIsClosed()
         {
             string testID = Guid.NewGuid().ToString();
-            string directoryPath = DerivedTextFileManager.TESTING_TEMP_DIRECTORY + testID;
-            string filename = DerivedTextFileManager.TESTING_TEMP_FILENAME + DerivedTextFileManager.TESTING_EXTENSION;
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
+            string filename = FileManager_Test.TESTING_TEMP_FILENAME + FileManager_Test.TESTING_EXTENSION;
 
-            DerivedTextFileManager testManager = new(directoryPath);
+            FileManager_Test testManager = new(directoryPath);
             bool result = true;
             try
             {
@@ -81,9 +80,9 @@ namespace FileUtility.Tests.TextFileManagerTests
         public void Constructor_ValidInput_ReaderIsNull()
         {
             string testID = Guid.NewGuid().ToString();
-            string directoryPath = DerivedTextFileManager.TESTING_TEMP_DIRECTORY + testID;
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
 
-            DerivedTextFileManager testManager = new(directoryPath);
+            FileManager_Test testManager = new(directoryPath);
             bool result = testManager.ExposedReader == null;
             TestServices.RunTestCleanup(testManager, directoryPath);
 
@@ -93,9 +92,9 @@ namespace FileUtility.Tests.TextFileManagerTests
         public void Constructor_ValidInput_WriterIsNull()
         {
             string testID = Guid.NewGuid().ToString();
-            string directoryPath = DerivedTextFileManager.TESTING_TEMP_DIRECTORY + testID;
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
 
-            DerivedTextFileManager testManager = new(directoryPath);
+            FileManager_Test testManager = new(directoryPath);
             bool result = testManager.ExposedWriter == null;
             TestServices.RunTestCleanup(testManager, directoryPath);
 
