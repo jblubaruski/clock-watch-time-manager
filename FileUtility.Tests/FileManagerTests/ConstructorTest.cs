@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FileUtility.Tests.TextFileManagerTests
+namespace FileUtility.Tests.FileManagerTests
 {
     /*
-     * Tests for the TextFileManager constructor
+     * Tests for the FileManager constructor
      * 
      * Assert that passing in an invalid filepath component throws an ArgumentException
      * Assert that a directory is created if the directory does not already exist
@@ -67,12 +67,12 @@ namespace FileUtility.Tests.TextFileManagerTests
             {
                 FileStream fs = File.Open(Path.Combine(directoryPath, filename), FileMode.Open);
                 fs.Close();
-                TestServices.RunTestCleanup(testManager, directoryPath);
             }
-            catch (Exception)
+            catch (IOException)
             {
                 result = false;
             }
+            TestServices.RunTestCleanup(testManager, directoryPath);
 
             Assert.True(result);
         }

@@ -1,5 +1,4 @@
 ﻿using ClockWatchTimeManager;
-using ClockWatchTimeManager.Models.Logging;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -10,8 +9,6 @@ namespace ClockWatchTimeManager
 {
     public static class MauiProgram
     {
-        internal static readonly LogWriter LogWriter = new("Clock Watch Time Manager");
-
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -30,7 +27,6 @@ namespace ClockWatchTimeManager
 
 #if DEBUG
     		builder.Logging.AddDebug();
-            LogWriter.WriteLogFileNameToDebugConsole();
             Debug.WriteLine("Ran CreateMauiApp()");
 #endif
             return builder.Build();

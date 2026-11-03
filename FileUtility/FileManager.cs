@@ -10,8 +10,11 @@ namespace FileUtility
      */
     public abstract class FileManager : IFileManager
     {
+        private const FileMode FILEMODE = FileMode.Open;
+
         protected string Filepath { get; set; }
         protected string DirectoryPath { get; set; }
+        protected string Extension { get; set; }
         protected StreamReader? Reader { get; set; }
         protected StreamWriter? Writer { get; set; }
 
@@ -29,6 +32,7 @@ namespace FileUtility
 
             Filepath = Path.Combine(directoryPath, baseFilename) + extension;
             DirectoryPath = directoryPath;
+            Extension = extension;
 
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
@@ -72,51 +76,86 @@ namespace FileUtility
          */
         public void Open(FileAccess fileAccess = FileAccess.ReadWrite, FileShare fileShare = FileShare.None)
         {
-            // TODO write file open logic
+            if (!FileExists())
+                throw new InvalidOperationException($"the file at {Filepath} must exist in order to open it");
+            if (IsOpen())
+                throw new InvalidOperationException($"cannot open the file at {Filepath} while it is already open");
+
+            FileStream fs = File.Open(Filepath, FILEMODE, fileAccess, fileShare);
+            if (fileAccess == FileAccess.Read)
+            {
+                Reader = new(fs);
+            }
+            else if (fileAccess == FileAccess.Write)
+            {
+                Writer = new(fs);
+            }
+            else
+            {
+                Reader = new(fs);
+                Writer = new(fs);
+            }
         }
 
         /*
          * Closes the file.
          * 
-         * Throws an InvalidOperationException if the file is already closed
          * Throws an InvalidOperationException if this file does not exist on the file system
          */
         public void Close()
         {
-            // TODO write close logic
-            if (!IsOpen())
-                throw new InvalidOperationException("the file cannot be closed when this method is called");
-            else if (!FileExists())
+            if (!FileExists())
                 throw new InvalidOperationException("the file must exist on the file system in order to close it");
-
-            Reader?.Close();
-            Writer?.Close();
+            
+            if (Reader != null && IsOpen())
+            {
+                Reader.Close();
+            }   
+            else if (Writer != null && IsOpen())
+            {
+                Writer.Close();
+            }
 
             Reader = null;
             Writer = null;
         }
 
         /*
-         * Renames the file to a new filename.
+         * Renames the file to a new filename while giving the new filename the same extension as the old filename
          * 
-         * baseFilename is the base name of the new filename
+         * newFilename is the base name of the new filename
          * 
-         * Throws an ArgumentException if the baseFilename is an invalid base filename
+         * Throws an ArgumentException if the newFilename is an invalid base filename
+         * Throws an ArgumentException if a file with the same name as the new name (case-insensitive) already exists
+         * Throws an InvalidOperationException if the original file is open
          */
-        public void Rename(string baseFilename)
+        public void Rename(string newFilename)
         {
             // TODO write rename logic
+            if (!FileValidator.BaseFilenameIsValid(newFilename, out string errorMessage))
+                throw new ArgumentException(errorMessage);
+            if (newFilename == Path.GetFileNameWithoutExtension(Filepath))
+                throw new ArgumentException($"newFilename ({newFilename}) cannot be the same as the current filename ({Path.GetFileNameWithoutExtension(Filepath)})");
+            if (IsOpen())
+                throw new InvalidOperationException("An open file cannot be renamed");
+
+            string newFilepath = Path.Combine(DirectoryPath, newFilename + Extension);
+
+            if (FileExists())
+                File.Move(Filepath, newFilepath);
+
+            Filepath = newFilepath;
         }
 
         /*
          * Copies the contents of this file to a new file in this file's directory.
          * 
-         * baseFilename is the filename of the new file
+         * newFilename is the filename of the new file
          * 
-         * Throws an ArgumentException if the baseFilename is an invalid base filename
+         * Throws an ArgumentException if the newFilename is an invalid base filename
          * Throws an InvalidOperationException if this file does not exist on the file system
          */
-        public IFileManager Copy(string baseFilename)
+        public IFileManager Copy(string newFilename)
         {
             // TODO write copy logic
 
@@ -126,13 +165,13 @@ namespace FileUtility
         /*
          * Copies the contents of this file to a new file at a new location.
          * 
-         * baseFilename is the filename of the new file
-         * directoryPath is the location of the new file
+         * newFilename is the filename of the new file
+         * newDirectoryPath is the location of the new file
          * 
          * Throws an ArgumentException if the filepath formed by the passed in strings is invalid
          * Throws an InvalidOperationException if this file does not exist on the file system
          */
-        public IFileManager Copy(string baseFilename, string directoryPath)
+        public IFileManager Copy(string newFilename, string newDirectoryPath)
         {
             // TODO write copy logic
 
@@ -142,12 +181,12 @@ namespace FileUtility
         /*
          * Moves this file to a new location
          * 
-         * directoryPath is the new location of this file
+         * newDirectoryPath is the new location of this file
          * 
-         * Throws an ArgumentException if directoryPath is an invalid directory path
+         * Throws an ArgumentException if newDirectoryPath is an invalid directory path
          * Throws an InvalidOperationException if this file does not exist on the file system
          */
-        public void Move(string directoryPath)
+        public void Move(string newDirectoryPath)
         {
             // TODO write move logic
         }
@@ -155,59 +194,14 @@ namespace FileUtility
         /*
          * Deletes this file from the file system
          * 
-         * Throws an InvalidOperationException if this file is open or does not exist on the file system
+         * Throws an InvalidOperationException if this file is open
          */
         public void Delete()
         {
-            // TODO write delete logic
-        }
+            if (IsOpen())
+                throw new InvalidOperationException($"{Filepath} cannot be deleted if it is currently open");
 
-        /*
-         * Reads and returns the entire file
-         * 
-         * Throws an InvalidOperationException if the file is closed
-         */
-        public string ReadFile()
-        {
-            // TODO Write read logic
-
-            return "";
-        }
-
-        /*
-         * Reads and outputs a single line from the file
-         * Returns true if there was a line to read
-         * 
-         * Throws an InvalidOperationException if the file is closed
-         */
-        public bool ReadLine(out string output)
-        {
-            // TODO Write read logic
-
-            output = "";
-            return false;
-        }
-
-        /*
-         * Overwrites the file with the passed in string
-         * 
-         * Throws an InvalidOperationException if the file is closed
-         */
-        public void WriteToFile(string toWrite)
-        {
-            ArgumentNullException.ThrowIfNull(toWrite);
-
-            // TODO write write logic
-        }
-
-        /*
-         * Appends the passed in string to the end of the file
-         */
-        public void AppendToFile(string toAppend)
-        {
-            ArgumentNullException.ThrowIfNull(toAppend);
-
-            // TODO write append logic
+            File.Delete(Filepath);
         }
     }
 }

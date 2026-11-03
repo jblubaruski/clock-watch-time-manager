@@ -18,8 +18,8 @@ namespace FileUtility.Tests.Derivations
         public const string TESTING_TEMP_FILENAME = "test_temp";
         public const string TESTING_EXTENSION = ".txt";
 
-        public StreamReader? ExposedReader { get; }
-        public StreamWriter? ExposedWriter { get; }
+        public StreamReader? ExposedReader { get; private set; }
+        public StreamWriter? ExposedWriter { get; private set; }
 
         // constructor that creates a file named test_temp.txt in the passed in directory
         public FileManager_Test(string directoryPath) : base(TESTING_TEMP_FILENAME, TESTING_EXTENSION, directoryPath)
@@ -54,6 +54,14 @@ namespace FileUtility.Tests.Derivations
         // constructor that creates a file named {baseFilename}.txt in the passed in directory
         public FileManager_Test(string baseFilename, string directoryPath) : base(baseFilename, TESTING_EXTENSION, directoryPath)
         {
+            ExposedReader = Reader;
+            ExposedWriter = Writer;
+        }
+
+        public void Open_Test(FileAccess fileAccess = FileAccess.ReadWrite, FileShare fileShare = FileShare.None)
+        {
+            Open(fileAccess, fileShare);
+
             ExposedReader = Reader;
             ExposedWriter = Writer;
         }

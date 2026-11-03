@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FileUtility.Tests.TextFileManagerTests
+namespace FileUtility.Tests.FileManagerTests
 {
     public class Copy1Test
     {

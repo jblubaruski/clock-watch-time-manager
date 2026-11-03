@@ -10,8 +10,18 @@ namespace FileUtility.Tests.Services
         // closes any potentially open files and deletes any created directories
         public static void RunTestCleanup(FileManager_Test testManager, string directoryPath)
         {
-            testManager.ExposedReader?.Close();
-            testManager.ExposedWriter?.Close();
+            try
+            {
+                testManager.ExposedReader?.Close();
+            }
+            catch (Exception) { }
+
+            try
+            {
+                testManager.ExposedWriter?.Close();
+            }
+            catch (Exception) { }
+
             Directory.Delete(directoryPath, true);
         }
     }
