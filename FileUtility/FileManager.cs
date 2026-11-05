@@ -126,7 +126,7 @@ namespace FileUtility
          * newFilename is the base name of the new filename
          * 
          * Throws an ArgumentException if the newFilename is an invalid base filename
-         * Throws an ArgumentException if a file with the same name as the new name (case-insensitive) already exists
+         * Throws an ArgumentException if a file with the same name as the new name (case-insensitive) already exists in the current directory
          * Throws an InvalidOperationException if the original file is open
          */
         public void Rename(string newFilename)
@@ -134,8 +134,8 @@ namespace FileUtility
             // TODO write rename logic
             if (!FileValidator.BaseFilenameIsValid(newFilename, out string errorMessage))
                 throw new ArgumentException(errorMessage);
-            if (newFilename == Path.GetFileNameWithoutExtension(Filepath))
-                throw new ArgumentException($"newFilename ({newFilename}) cannot be the same as the current filename ({Path.GetFileNameWithoutExtension(Filepath)})");
+            if (FileExistsInDirectory(newFilename + Extension, DirectoryPath))
+                throw new ArgumentException($"newFilename ({newFilename}) cannot match another filename in {DirectoryPath}");
             if (IsOpen())
                 throw new InvalidOperationException("An open file cannot be renamed");
 
@@ -151,11 +151,15 @@ namespace FileUtility
          * Copies the contents of this file to a new file in this file's directory.
          * 
          * newFilename is the filename of the new file
+         * A file with the same name as newFilename is overwritten if overwrite is true
          * 
          * Throws an ArgumentException if the newFilename is an invalid base filename
+         * Throws an ArgumentException if the newFilename is the same as this file's Filename and overwrite is false
+         * Throws an ArgumentException if the newFilename is the same as another file in the current directory and overwrite is false
          * Throws an InvalidOperationException if this file does not exist on the file system
+         * Throws an InvalidOperationException if this file is open
          */
-        public IFileManager Copy(string newFilename)
+        public IFileManager Copy(string newFilename, bool overwrite)
         {
             // TODO write copy logic
 
@@ -167,11 +171,15 @@ namespace FileUtility
          * 
          * newFilename is the filename of the new file
          * newDirectoryPath is the location of the new file
+         * A file with the same name as newFilename is overwritten if overwrite is true
          * 
          * Throws an ArgumentException if the filepath formed by the passed in strings is invalid
+         * Throws an ArgumentException if the newFilename is the same as this file's Filename and overwrite is false
+         * Throws an ArgumentException if the newFilename is the same as another file in the new directory and overwrite is false
          * Throws an InvalidOperationException if this file does not exist on the file system
+         * Throws an InvalidOperationException if this file is open
          */
-        public IFileManager Copy(string newFilename, string newDirectoryPath)
+        public IFileManager Copy(string newFilename, string newDirectoryPath, bool overwrite)
         {
             // TODO write copy logic
 
@@ -182,13 +190,26 @@ namespace FileUtility
          * Moves this file to a new location
          * 
          * newDirectoryPath is the new location of this file
+         * A file with the same name as newFilename is overwritten if overwrite is true
          * 
          * Throws an ArgumentException if newDirectoryPath is an invalid directory path
+         * Throws an ArgumentException if the newFilename is the same as another file in the new directory and overwrite is false
          * Throws an InvalidOperationException if this file does not exist on the file system
+         * Throws an InvalidOperationException if this file is open
          */
-        public void Move(string newDirectoryPath)
+        public void Move(string newDirectoryPath, bool overwrite)
         {
             // TODO write move logic
+            if (!FileValidator.DirectoryPathIsValid(newDirectoryPath, out string errorMessage))
+                throw new ArgumentException(errorMessage);
+            if (FileExistsInDirectory(Path.GetFileName(Filepath), newDirectoryPath))
+                throw new ArgumentException($"newFilename ({Path.GetFileName(Filepath)}) cannot match another filename in {newDirectoryPath}");
+            if (!FileExists())
+                throw new InvalidOperationException("A file can only be moved if it exists in the file system");
+            if (IsOpen())
+                throw new InvalidOperationException("An open file cannot be moved");
+
+
         }
 
         /*
@@ -202,6 +223,21 @@ namespace FileUtility
                 throw new InvalidOperationException($"{Filepath} cannot be deleted if it is currently open");
 
             File.Delete(Filepath);
+        }
+
+        /*
+         * Returns true if a file with the passed in filename exists in the passed in directory
+         * The passed in filename is assumed to have an extension
+         */
+        private static bool FileExistsInDirectory(string filename, string directoryPath)
+        {
+            foreach(string otherFilename in Directory.GetFiles(directoryPath))
+            {
+                if (otherFilename == Path.Combine(directoryPath, filename))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

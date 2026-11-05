@@ -11,6 +11,7 @@ namespace FileUtility.Tests.FileManagerTests
      * 
      * Assert that passing in an invalid base filename throws an ArgumentException
      * Assert that passing in a base filename identical to the file's current name throws an ArgumentException
+     * Assert that passing in a base finename identical to the basename of a file in the same directory throws an ArgumentException
      * Assert that calling rename on an open file throws an InvalidOperationException
      * Assert that the old file does not exist after calling rename
      * Assert that the new file exists after calling rename
@@ -41,6 +42,24 @@ namespace FileUtility.Tests.FileManagerTests
             string baseFilename = FileManager_Test.TESTING_TEMP_FILENAME;
 
             FileManager_Test testManager = new(directoryPath);
+
+            Assert.Throws<ArgumentException>
+                (
+                    () => testManager.Rename(baseFilename)
+                );
+
+            TestServices.RunTestCleanup(testManager, directoryPath);
+        }
+        [Fact]
+        public void Rename_IdenticalNameToFileInDirectory_ThrowArgumentException()
+        {
+            string testID = Guid.NewGuid().ToString();
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
+            string baseFilename = FileManager_Test.TESTING_DUPLICATE_FILENAME;
+            string extension = FileManager_Test.TESTING_EXTENSION;
+
+            FileManager_Test testManager = new(directoryPath);
+            TestServices.CreateThreeClosedTestFiles(directoryPath, extension);
 
             Assert.Throws<ArgumentException>
                 (

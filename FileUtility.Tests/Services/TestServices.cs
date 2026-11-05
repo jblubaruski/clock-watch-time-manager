@@ -24,5 +24,13 @@ namespace FileUtility.Tests.Services
 
             Directory.Delete(directoryPath, true);
         }
+
+        // creates three closed test files names "a{extension}", "b{extension}", and "c{extension" in the passed in directory
+        public static void CreateThreeClosedTestFiles(string directoryPath, string extension)
+        {
+            using (FileStream fs = File.Create(Path.Combine(directoryPath, "a" + extension))) { }
+            using (FileStream fs = File.Create(Path.Combine(directoryPath, "b" + extension))) { }
+            using (FileStream fs = File.Create(Path.Combine(directoryPath, "c" + extension))) { }
+        }
     }
 }

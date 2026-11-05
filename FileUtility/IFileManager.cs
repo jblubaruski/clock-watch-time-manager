@@ -12,9 +12,9 @@ namespace FileUtility
         public void Open(FileAccess fileAccess, FileShare fileShare);
         public void Close();
         public void Rename(string baseFilename);
-        public IFileManager Copy(string baseFilename);
-        public IFileManager Copy(string baseFilename, string directoryPath);
-        public void Move(string directoryPath);
+        public IFileManager Copy(string baseFilename, bool overwrite);
+        public IFileManager Copy(string baseFilename, string directoryPath, bool overwrite);
+        public void Move(string directoryPath, bool overwrite);
         public void Delete();
         public bool FileExists();
         public bool IsOpen();
