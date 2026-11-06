@@ -17,6 +17,7 @@ namespace FileUtility.Tests.Derivations
         public const string TESTING_WRITE_DIRECTORY = "D:\\PlaypenTesting\\FileUtility\\FileManagerTests\\TestWriteDir";
         public const string TESTING_DUPLICATEFILENAME_DIRECTORY = "D:\\PlaypenTesting\\FileUtility\\FileManagerTests\\TestDuplicateFilenameDir";
         public const string TESTING_MOVETO_DIRECTORY = "D:\\PlaypenTesting\\FileUtility\\FileManagerTests\\TestMoveToDir";
+        public const string TESTING_COPYTO_DIRECTORY = "D:\\PlaypenTesting\\FileUtility\\FileManagerTests\\TestCopyToDir";
         public const string TESTING_DUPLICATE_FILENAME = "a";
         public const string TESTING_NONDUPLICATE_FILENAME = "c";
         public const string TESTING_TEMP_FILENAME = "test_temp";

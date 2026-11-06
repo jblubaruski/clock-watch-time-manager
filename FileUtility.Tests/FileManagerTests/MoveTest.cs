@@ -14,7 +14,6 @@ namespace FileUtility.Tests.FileManagerTests
      * Assert that trying to move a file that doesnt exist on the file system throws an InvalidOperationException
      * Assert that trying to move an open file throws an InvalidOperationException
      * Assert that the file exists in the new directory after calling move
-     * Assert that moving a file to a directory with a duplicate filename with overwrite set to true replaces that file with this file
      */
     public class MoveTest
     {
@@ -100,6 +99,26 @@ namespace FileUtility.Tests.FileManagerTests
 
             TestServices.RunTestCleanup(testManager, originalDirectoryPath);
             TestServices.RunTestCleanup(testManager, newDirectoryPath);
+        }
+        [Fact]
+        public void Move_ValidStateOverwriteOff_FileExistsInNewDirectory()
+        {
+            string testID = Guid.NewGuid().ToString();
+            string originalDirectoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
+            string newDirectoryPath = FileManager_Test.TESTING_MOVETO_DIRECTORY + testID;
+            string filename = FileManager_Test.TESTING_NONDUPLICATE_FILENAME;
+            string extension = FileManager_Test.TESTING_EXTENSION;
+            bool overwrite = false;
+
+            FileManager_Test testManager = new(filename, originalDirectoryPath);
+            Directory.CreateDirectory(newDirectoryPath);
+            testManager.Move(newDirectoryPath, overwrite);
+            bool result = File.Exists(Path.Combine(newDirectoryPath, filename + extension));
+
+            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
+            TestServices.RunTestCleanup(testManager, newDirectoryPath);
+
+            Assert.True(result);
         }
     }
 }

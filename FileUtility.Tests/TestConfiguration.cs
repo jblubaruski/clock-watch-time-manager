@@ -6,7 +6,7 @@ using System.Text;
 [assembly: CollectionBehavior(DisableTestParallelization = false)]
 namespace FileUtility.Tests
 {
-    internal class DisableParallelization
+    internal class TestConfiguration
     {
     }
 }
