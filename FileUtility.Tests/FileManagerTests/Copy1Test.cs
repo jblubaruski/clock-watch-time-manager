@@ -10,6 +10,7 @@ namespace FileUtility.Tests.FileManagerTests
      * Tests for FileManager.Copy(string, bool)
      *
      * Assert that passing in an invalid base filename throws an ArgumentException
+     * Assert that passing in a filename that is the same as the original file's filename while overwrite is true throws an ArgumentException
      * Assert that passing in a filename that is the same as a file in the original file's directory while overwrite is false throws an ArgumentException
      * Assert that trying to copy a file that does not exist on the file system throws an InvalidOperationException
      * Assert that trying to copy an open file throws an InvalidOperationException
@@ -36,7 +37,25 @@ namespace FileUtility.Tests.FileManagerTests
             TestServices.RunTestCleanup(testManager, directoryPath);
         }
         [Fact]
-        public void Copy1_DuplicateFilename_ThrowArgumentException()
+        public void Copy1_FilenameSameAsOriginalOverwriteTrue_ThrowArgumentException()
+        {
+            string testID = Guid.NewGuid().ToString();
+            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
+            string originalFilename = FileManager_Test.TESTING_TEMP_FILENAME;
+            string newFilename = originalFilename;
+            bool overwrite = true;
+
+            FileManager_Test testManager = new(directoryPath);
+
+            Assert.Throws<ArgumentException>
+                (
+                    () => testManager.Copy(newFilename, overwrite)
+                );
+
+            TestServices.RunTestCleanup(testManager, directoryPath);
+        }
+        [Fact]
+        public void Copy1_DuplicateFilenameOverwriteFalse_ThrowArgumentException()
         {
             string testID = Guid.NewGuid().ToString();
             string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
