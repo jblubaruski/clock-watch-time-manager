@@ -9,7 +9,7 @@ namespace FileUtility.Text
      */
     public interface ITextFileReader
     {
-        public string ReadFile();
-        public bool ReadLine(out string output);
+        public string? ReadFile();
+        public string? ReadLine();
     }
 }

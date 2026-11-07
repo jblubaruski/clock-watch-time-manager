@@ -9,7 +9,7 @@ namespace FileUtility.CSV
      */
     public interface ICSVFileReader
     {
-        public string[,] ReadFile(bool firstLineIsHeader);
-        public bool ReadEntry(out string[] output);
+        public string[,]? ReadFile(bool firstLineIsHeader);
+        public string[]? ReadEntry();
     }
 }

@@ -9,7 +9,7 @@ namespace FileUtility.JSON
      */
     public interface IJsonFileReader
     {
-        public object[] ReadFile();
-        public bool ReadEntry(out object output);
+        public object[]? ReadFile();
+        public object? ReadEntry();
     }
 }
