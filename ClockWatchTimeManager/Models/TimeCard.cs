@@ -18,25 +18,29 @@ namespace ClockWatchTimeManager.Models
         /*
          * Returns a string representation of this time card in the format:
          * 
-         * Clock in:  <ClockInDateTime.ToString()>
-         * Clock out: <ClockOutDateTime.ToString()>
+         * Clock in:      {MM/dd/yyyy hh:mm:ss tt}
+         * {TimeSheet}
+         * Clock out:     {MM/dd/yyyy hh:mm:ss tt}
          * 
-         * if either ClockInDateTime or ClockOutDateTime are null,
-         * they should be represented with 20 hyphens.
+         * if either ClockInDateTime or ClockOutDateTime are null they are represented with the following:
+         * Clock in:      --/--/---- --:--:-- --
+         * Clock out:     --/--/---- --:--:-- --
          */
         public override string ToString()
         {
             string str = "";
 
-            if (ClockInDateTime == null)
-                str += $"Clock in:  {"".PadLeft(20, '-')}\n";
+            if (ClockInDateTime != null)
+                str += $"Clock in:      {ClockInDateTime:MM/dd/yyyy hh:mm:ss tt}\n";
             else
-                str += $"Clock in:  {ClockInDateTime}\n";
+                str += "Clock in:      --/--/---- --:--:-- --\n";
 
-            if (ClockOutDateTime == null)
-                str += $"Clock out: {"".PadLeft(20, '-')}";
+            str += TimeSheet.ToString() + "\n";
+
+            if (ClockOutDateTime != null)
+                str += $"Clock out:     {ClockOutDateTime:MM/dd/yyyy hh:mm:ss tt}";
             else
-                str += $"Clock out: {ClockOutDateTime}";
+                str += "Clock out:     --/--/---- --:--:-- --";
 
             return str;
         }

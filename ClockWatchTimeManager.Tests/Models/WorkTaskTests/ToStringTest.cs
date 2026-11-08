@@ -9,24 +9,24 @@ namespace ClockWatchTimeManager.Tests.Models.WorkTaskTests
      * Tests for Models.WorkTask.ToString()
      * 
      * Assert that calling ToString with no null properties returns the following string:
-     * Task start: MM/dd/yyyy hh:mm:ss tt
+     * Task start:  MM/dd/yyyy hh:mm:ss tt
      * {task description}
-     * Task end:   MM/dd/yyyy hh:mm:ss tt
+     * Task end:    MM/dd/yyyy hh:mm:ss tt
      * 
      * Assert that calling ToString on a task with a null start time returns the following string:
-     * Task start: --/--/---- --:--:-- --
+     * Task start:  --/--/---- --:--:-- --
      * {task description}
-     * Task end:   MM/dd/yyyy hh:mm:ss tt
+     * Task end:    MM/dd/yyyy hh:mm:ss tt
      * 
      * Assert that calling ToString on a task with a null description returns the following string:
-     * Task start: MM/dd/yyyy hh:mm:ss tt
+     * Task start:  MM/dd/yyyy hh:mm:ss tt
      * ---
-     * Task end:   MM/dd/yyyy hh:mm:ss tt
+     * Task end:    MM/dd/yyyy hh:mm:ss tt
      * 
      * Assert that calling ToString on a task with a null end time returns the following string:
-     * Task start: MM/dd/yyyy hh:mm:ss tt
+     * Task start:  MM/dd/yyyy hh:mm:ss tt
      * {task description}
-     * Task end:   --/--/---- --:--:-- --
+     * Task end:    --/--/---- --:--:-- --
      */
     public class ToStringTest
     {
@@ -38,9 +38,9 @@ namespace ClockWatchTimeManager.Tests.Models.WorkTaskTests
         public void ToString_NoNull_ProperFormat()
         {
             string expectedOutput =
-                $"Task start: {startTime:MM/dd/yyyy hh:mm:ss tt}\n" +
+                $"Task start:  {startTime:MM/dd/yyyy hh:mm:ss tt}\n" +
                 $"{description}\n" +
-                $"Task end:   {endTime:MM/dd/yyyy hh:mm:ss tt}";
+                $"Task end:    {endTime:MM/dd/yyyy hh:mm:ss tt}";
 
             WorkTask testTask = new(startTime, endTime, description);
             string output = testTask.ToString();
@@ -53,9 +53,9 @@ namespace ClockWatchTimeManager.Tests.Models.WorkTaskTests
         public void ToString_NullStartTime_ProperFormat()
         {
             string expectedOutput =
-                "Task start: --/--/---- --:--:-- --\n" +
+                "Task start:  --/--/---- --:--:-- --\n" +
                 $"{description}\n" +
-                $"Task end:   {endTime:MM/dd/yyyy hh:mm:ss tt}";
+                $"Task end:    {endTime:MM/dd/yyyy hh:mm:ss tt}";
 
             WorkTask testTask = new(null, endTime, description);
             string output = testTask.ToString();
@@ -68,9 +68,9 @@ namespace ClockWatchTimeManager.Tests.Models.WorkTaskTests
         public void ToString_NullEndTime_ProperFormat()
         {
             string expectedOutput =
-                $"Task start: {startTime:MM/dd/yyyy hh:mm:ss tt}\n" +
+                $"Task start:  {startTime:MM/dd/yyyy hh:mm:ss tt}\n" +
                 $"{description}\n" +
-                "Task end:   --/--/---- --:--:-- --";
+                "Task end:    --/--/---- --:--:-- --";
 
             WorkTask testTask = new(startTime, null, description);
             string output = testTask.ToString();
@@ -83,9 +83,9 @@ namespace ClockWatchTimeManager.Tests.Models.WorkTaskTests
         public void ToString_NullDescription_ProperFormat()
         {
             string expectedOutput =
-                $"Task start: {startTime:MM/dd/yyyy hh:mm:ss tt}\n" +
+                $"Task start:  {startTime:MM/dd/yyyy hh:mm:ss tt}\n" +
                 "---\n" +
-                $"Task end:   {endTime:MM/dd/yyyy hh:mm:ss tt}";
+                $"Task end:    {endTime:MM/dd/yyyy hh:mm:ss tt}";
 
             WorkTask testTask = new(startTime, endTime, null);
             string output = testTask.ToString();

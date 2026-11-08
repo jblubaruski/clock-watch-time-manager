@@ -17,14 +17,14 @@ namespace ClockWatchTimeManager.Models
          * Returns a string representation of this task
          * 
          * The representation is formatted as:
-         * Task start: MM/dd/yyyy hh:mm:ss tt
+         * Task start:  MM/dd/yyyy hh:mm:ss tt
          * {break description}
-         * Task end:   MM/dd/yyyy hh:mm:ss tt
+         * Task end:    MM/dd/yyyy hh:mm:ss tt
          * 
          * Each line is shown as the following if null:
-         * Task start: --/--/---- --:--:-- --
+         * Task start:  --/--/---- --:--:-- --
          * ---
-         * Task end:   --/--/---- --:--:-- --
+         * Task end:    --/--/---- --:--:-- --
          */
         public override string ToString()
         {
