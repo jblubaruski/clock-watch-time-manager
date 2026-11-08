@@ -2,8 +2,10 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
-  <Project Path="ClockWatchTimeManager/ClockWatchTimeManager.csproj" />
+  <Project Path="BusinessApplicationModels.Tests/BusinessApplicationModels.Tests.csproj" Id="ba46b3da-063b-42a6-b473-2127e6a68cc1" />
+  <Project Path="BusinessApplicationModels/BusinessApplicationModels.csproj" Id="3ff2e202-c52b-48d4-9d19-5b0655bf3397" />
   <Project Path="ClockWatchTimeManager.Tests/ClockWatchTimeManager.Tests.csproj" Id="c758c0cb-3228-407b-a737-67c6adb54f10" />
+  <Project Path="ClockWatchTimeManager/ClockWatchTimeManager.csproj" />
   <Project Path="FileUtility.Tests/FileUtility.Tests.csproj" Id="c3b42720-1d5b-4544-a439-9b2404c46c2f" />
   <Project Path="FileUtility/FileUtility.csproj" Id="d8c70555-6fd8-4932-b7dd-6d214a8d5055" />
 </Solution>

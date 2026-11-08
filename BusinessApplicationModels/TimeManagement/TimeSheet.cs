@@ -1,8 +1,9 @@
-﻿using System;
+﻿using BusinessApplicationModels.TimeManagement;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClockWatchTimeManager.Models
+namespace BusinessApplicationModels.TimeManagement
 {
     /*
      * Represents a collection containing all the breaks and tasks taken and carried out during the work period.

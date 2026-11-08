@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClockWatchTimeManager.Models
+namespace BusinessApplicationModels.TimeManagement
 {
     /*
      * Represents a single break period taken during the work period.

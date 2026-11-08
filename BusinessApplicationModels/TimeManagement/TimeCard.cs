@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClockWatchTimeManager.Models
+namespace BusinessApplicationModels.TimeManagement
 {
     /*
      * Represents a single work period.
      * Includes the start and stop time and date of the work period as well as 
      * the timesheet containing the breaks taken and tasks worked during the work period.
      */
-    internal class TimeCard
+    public class TimeCard
     {
         private TimeSheet TimeSheet { get; } = new();
         public DateTime? ClockInDateTime { get; set; } = null;

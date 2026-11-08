@@ -1,9 +1,9 @@
-﻿using ClockWatchTimeManager.Models;
+﻿using BusinessApplicationModels.TimeManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClockWatchTimeManager.Tests.Models.BreakTests
+namespace BusinessApplicationModels.Tests.TimeManagement.BreakTests
 {
     /*
      * Tests for Models.Break.ToString()

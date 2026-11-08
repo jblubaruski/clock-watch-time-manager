@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClockWatchTimeManager.Models
+namespace BusinessApplicationModels.TimeManagement
 {
-    internal class TimeCardCatalog
+    public class TimeCardCatalog
     {
         /*
          * Contains and manages a collection of timecards

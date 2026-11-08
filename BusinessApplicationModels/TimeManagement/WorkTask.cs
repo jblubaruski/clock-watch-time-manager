@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClockWatchTimeManager.Models
+namespace BusinessApplicationModels.TimeManagement
 {
     /*
      * Represents a single task or group of tasks carried out at once during the work period.

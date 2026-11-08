@@ -1,6 +1,6 @@
 ﻿using ClockWatchTimeManager;
 using ClockWatchTimeManager.Services;
-using ClockWatchTimeManager.Models;
+using BusinessApplicationModels.TimeManagement;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;

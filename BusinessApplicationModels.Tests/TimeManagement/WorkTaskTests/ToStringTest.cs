@@ -1,9 +1,9 @@
-﻿using ClockWatchTimeManager.Models;
+﻿using BusinessApplicationModels.TimeManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClockWatchTimeManager.Tests.Models.WorkTaskTests
+namespace BusinessApplicationModels.Tests.TimeManagement.WorkTaskTests
 {
     /*
      * Tests for Models.WorkTask.ToString()
