@@ -105,6 +105,7 @@ namespace FileUtility.Text
          * Appends the passed in string to the end of the file as a new line.
          * 
          * Does nothing if the passed in string is null
+         * A passed in string with new line characters should append multiple lines with the new line splitting up the lines
          * 
          * Throws an InvalidOperationException if the file does not exist
          */
@@ -112,6 +113,12 @@ namespace FileUtility.Text
         {
             if (!FileExists())
                 throw new InvalidOperationException($"cannot read from {Filepath} because it does not exist on the file system");
+
+            if (toAppend != null)
+            {
+                using StreamWriter writer = new(Filepath, true);
+                writer.WriteLine(toAppend);
+            }
         }
     }
 }
