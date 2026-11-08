@@ -7,30 +7,32 @@ namespace ClockWatchTimeManager.Models
     internal class TimeCardCatalog
     {
         /*
-         * Contains and manages a collection of time cards
+         * Contains and manages a collection of timecards
          */
         private List<TimeCard> Catalog { get; } = [];
 
         /*
          * Adds the passed in time card to the catalog
+         * 
+         * Throws an ArgumentNullException if a null timecard is passed in
          */
-        public void AddTimeCard(TimeCard timeCard)
+        public void AddTimeCard(TimeCard timecard)
         {
-            ArgumentNullException.ThrowIfNull(timeCard);
-            Catalog.Add(timeCard);
+            ArgumentNullException.ThrowIfNull(timecard);
+            Catalog.Add(timecard);
         }
 
         /*
-         * Returns a string representation of this catalog in the format:
+         * Returns a string representation of this catalog 
+         * 
+         * The representation is formatted as:
          * Time Cards:
          * ====================
-         * <Time Card 1>
+         * {Time Card 1}
          * --------------------
-         * <Time Card 2>
+         * {Time Card 2}
          * --------------------
          * ...
-         * --------------------
-         * <Time Card N>
          */
         public override string ToString()
         {

@@ -64,7 +64,7 @@ partial class CreateTimeCardViewModel : ObservableObject
      */
 
     // the current time card
-    private TimeCard TimeCard { get; set; } = new();
+    private TimeCard Timecard { get; set; } = new();
 
     /*
      * COMMANDS
@@ -81,14 +81,14 @@ partial class CreateTimeCardViewModel : ObservableObject
         ClockOutEnabled = true;
         TimeCardSavedNotifVisible = false;
 
-        TimeCard = new();
+        Timecard = new();
         
         DateTime currentDateTime = DateTime.Now;
-        TimeCard.ClockInDateTime = currentDateTime;
+        Timecard.ClockInDateTime = currentDateTime;
 
-        App.logger.LogEntry($"Clocked in at {TimeCard.ClockInDateTime}");
+        App.logger.LogEntry($"Clocked in at {Timecard.ClockInDateTime}");
 
-        ClockInDateTime = string.Format(DEFAULT_DATETIME_FORMAT, TimeCard.ClockInDateTime);
+        ClockInDateTime = string.Format(DEFAULT_DATETIME_FORMAT, Timecard.ClockInDateTime);
     }
     bool ClockInCanExecute()
     {
@@ -107,15 +107,15 @@ partial class CreateTimeCardViewModel : ObservableObject
         TimeCardSavedNotifVisible = true;
 
         DateTime currentDateTime = DateTime.Now;
-        TimeCard.ClockOutDateTime = currentDateTime;
+        Timecard.ClockOutDateTime = currentDateTime;
 
-        App.catalog.AddTimeCard(TimeCard);
+        App.catalog.AddTimeCard(Timecard);
 
         ClockInDateTime = DEFAULT_DATETIME;
 
         App.logger.LogEntry
             (
-                $"Logged Time card:\n{TimeCard}",
+                $"Logged Time card:\n{Timecard}",
                 App.catalog.ToString()
             );
     }
@@ -137,7 +137,7 @@ partial class CreateTimeCardViewModel : ObservableObject
         ClockInEnabled = true;
         ClockOutEnabled = false;
         ClockInDateTime = DEFAULT_DATETIME;
-        TimeCard = new();
+        Timecard = new();
     }
 
     /*
