@@ -8,7 +8,7 @@ namespace FileUtility
     /*
      * Encapsulates a filepath representing the location of a text file while carrying out operations on and managing the file's state.
      */
-    public class FileManager : IFileManager
+    public class FileManager : IFileManager, IEquatable<FileManager>
     {
         protected string Filepath { get; set; }
         protected string BaseFilename { get; set; }
@@ -153,6 +153,17 @@ namespace FileUtility
         {
             if (FileExists())
                 File.Delete(Filepath);
+        }
+
+        /*
+         * Returns true if this file manager's filepath is the same as the passed in file manager's filepath.
+         */
+        public bool Equals(FileManager? other)
+        {
+            if (other != null && Filepath == other.Filepath)
+                return true;
+
+            return false;
         }
 
         /*

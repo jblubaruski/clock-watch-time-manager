@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace FileUtility.Text
@@ -21,11 +22,29 @@ namespace FileUtility.Text
          * If the file is empty, a null value is returned.
          * 
          * Throws an InvalidOperationException if the file does not exist
-         * Throws an InvalidOperationException if the file is write-only
          */
         public string? ReadFile()
         {
-            return null;
+            if (!FileExists())
+                throw new InvalidOperationException($"cannot read from {Filepath} because it does not exist on the file system");
+
+            using StreamReader reader = new(Filepath);
+
+            string? line = reader.ReadLine();
+            if (line == null)
+            {
+                return null;
+            }
+            else
+            {
+                string content = line + "\n";
+                while ((line = reader.ReadLine()) != null)
+                {
+                    content += line + "\n";
+                }
+
+                return content[..^1];
+            }
         }
 
         /*
@@ -34,7 +53,6 @@ namespace FileUtility.Text
          * If there is no next line to read from the file, a null value is returned.
          * 
          * Throws an InvalidOperationException if the file does not exist
-         * Throws an InvalidOperationException if the file is write-only
          */
         public string? ReadLine()
         {
@@ -46,7 +64,6 @@ namespace FileUtility.Text
          * 
          * Throws an ArgumentException if the passed in string is null
          * Throws an InvalidOperationException if the file does not exist
-         * Throws an InvalidOperationException if the file is read-only
          */
         public void WriteToFile(string toWrite)
         {
@@ -58,7 +75,6 @@ namespace FileUtility.Text
          * 
          * Throws an ArgumentException if the passed in string is null
          * Throws an InvalidOperationException if the file does not exist
-         * Throws an InvalidOperationException if the file is read-only
          */
         public void AppendToFile(string toAppend)
         {
