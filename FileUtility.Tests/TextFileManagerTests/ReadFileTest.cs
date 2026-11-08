@@ -63,7 +63,7 @@ namespace FileUtility.Tests.TextFileManagerTests
             string[] testInput = content.Split("\n");
 
             TextFileManager_Test testManager = new(baseFilename, directoryPath);
-            TestServices.FillClosedTestFileWithContentStringArray(testManager, testInput);
+            TestServices.FillClosedTextFileWithContentStringArray(testManager, testInput);
 
             string? testOutput = testManager.ReadFile();
             bool result = testOutput == content;

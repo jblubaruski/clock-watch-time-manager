@@ -10,6 +10,6 @@ namespace FileUtility.Text
     public interface ITextFileReader
     {
         public string? ReadFile();
-        public string? ReadLine();
+        public string? ReadLine(int lineNumber);
     }
 }

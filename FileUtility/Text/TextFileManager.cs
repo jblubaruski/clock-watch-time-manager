@@ -48,14 +48,37 @@ namespace FileUtility.Text
         }
 
         /*
-         * Reads the next line from the file and returns it as a string.
+         * Reads the specified line from the file and returns it as a string.
          * 
-         * If there is no next line to read from the file, a null value is returned.
+         * lineNumber is the number of the line to be read (starts at zero)
+         * A null pointer is returned if the file is empty or there no line corresponding to the passed in line number
          * 
          * Throws an InvalidOperationException if the file does not exist
          */
-        public string? ReadLine()
+        public string? ReadLine(int lineNumber)
         {
+            if (!FileExists())
+                throw new InvalidOperationException($"cannot read from {Filepath} because it does not exist on the file system");
+
+            using StreamReader reader = new(Filepath);
+
+            string? line = reader.ReadLine();
+
+            // the first line contains content and is the desired line
+            if (line != null && lineNumber == 0)
+                return line;
+
+            // iterate through rest the file until either the end of the file or desired line number is reached
+            int currentLine = 0;
+            while ((line = reader.ReadLine()) != null)
+            {
+                currentLine += 1;
+
+                if (currentLine == lineNumber)
+                    return line;
+            }
+
+            // the end of the file was reached before reaching the desired line number
             return null;
         }
 

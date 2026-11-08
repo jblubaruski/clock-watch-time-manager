@@ -22,15 +22,8 @@ namespace FileUtility.Tests.Services
             }       
         }
 
-        // overwrites the closed test .txt file with the passed in string
-        public static void FillClosedTestFileWithContentString(TextFileManager_Test testManager, string content)
-        {
-            using StreamWriter writer = new(testManager.ExposedFilepath, false);
-            writer.WriteLine(content);
-        }
-
         // overwrites the closed test .txt file with the passed in string array
-        public static void FillClosedTestFileWithContentStringArray(TextFileManager_Test testManager, string[] content)
+        public static void FillClosedTextFileWithContentStringArray(TextFileManager_Test testManager, string[] content)
         {
             using StreamWriter writer = new(testManager.ExposedFilepath, false);
             
