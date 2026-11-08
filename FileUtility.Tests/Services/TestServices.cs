@@ -32,5 +32,24 @@ namespace FileUtility.Tests.Services
                 writer.WriteLine(line);
             }
         }
+
+        // reads and returns the content inside a .txt file as a string with each line ending in a new line character
+        // returns null if the file is empty
+        public static string? ReadClosedTextFile(TextFileManager_Test testManager)
+        {
+            using StreamReader reader = new(testManager.ExposedFilepath);
+
+            string? line = reader.ReadLine();
+            if (line == null)
+                return null;
+
+            string content = line + "\n";
+            while ((line = reader.ReadLine()) != null)
+            {
+                content += line + "\n";
+            }
+
+            return content[..^1];
+        }
     }
 }

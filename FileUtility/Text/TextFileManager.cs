@@ -85,23 +85,33 @@ namespace FileUtility.Text
         /*
          * Overwrites a file with the content of the passed in string.
          * 
-         * Throws an ArgumentException if the passed in string is null
+         * Does nothing if the passed in string is null
+         * 
          * Throws an InvalidOperationException if the file does not exist
          */
         public void WriteToFile(string toWrite)
         {
+            if (!FileExists())
+                throw new InvalidOperationException($"cannot read from {Filepath} because it does not exist on the file system");
 
+            if (toWrite != null)
+            {
+                using StreamWriter writer = new(Filepath, false);
+                writer.WriteLine(toWrite);
+            }
         }
 
         /*
          * Appends the passed in string to the end of the file as a new line.
          * 
-         * Throws an ArgumentException if the passed in string is null
+         * Does nothing if the passed in string is null
+         * 
          * Throws an InvalidOperationException if the file does not exist
          */
         public void AppendToFile(string toAppend)
         {
-
+            if (!FileExists())
+                throw new InvalidOperationException($"cannot read from {Filepath} because it does not exist on the file system");
         }
     }
 }
