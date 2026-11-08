@@ -86,9 +86,7 @@ partial class CreateTimeCardViewModel : ObservableObject
         DateTime currentDateTime = DateTime.Now;
         TimeCard.ClockInDateTime = currentDateTime;
 
-#if DEBUG
-        Debug.WriteLine($"Clocked in at {TimeCard.ClockInDateTime}");
-#endif
+        App.logger.LogEntry($"Clocked in at {TimeCard.ClockInDateTime}");
 
         ClockInDateTime = string.Format(DEFAULT_DATETIME_FORMAT, TimeCard.ClockInDateTime);
     }
@@ -115,10 +113,11 @@ partial class CreateTimeCardViewModel : ObservableObject
 
         ClockInDateTime = DEFAULT_DATETIME;
 
-#if DEBUG
-        Debug.WriteLine($"Logged Time card:\n{TimeCard}");
-        Debug.WriteLine(App.catalog);
-#endif
+        App.logger.LogEntry
+            (
+                $"Logged Time card:\n{TimeCard}",
+                App.catalog.ToString()
+            );
     }
     bool ClockOutCanExecute()
     {

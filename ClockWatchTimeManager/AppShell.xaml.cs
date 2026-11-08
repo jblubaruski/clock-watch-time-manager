@@ -8,9 +8,7 @@ namespace ClockWatchTimeManager
         {
             InitializeComponent();
 
-#if DEBUG
-            Debug.WriteLine("Called AppShell()");
-#endif
+            App.logger.LogEntry("Called AppShell()");
         }
 
         /*
@@ -20,14 +18,12 @@ namespace ClockWatchTimeManager
         {
             base.OnNavigating(args);
 
-#if DEBUG
             if (args.Current == null)
-                Debug.WriteLine($"Shell is navigating to {args.Target.Location} by {args.Source}");
+                App.logger.LogEntry($"Shell is navigating to {args.Target.Location} by {args.Source}");
             else if (args.Target == null)
-                Debug.WriteLine($"Shell is navigating from {args.Current.Location} by {args.Source}");
+                App.logger.LogEntry($"Shell is navigating from {args.Current.Location} by {args.Source}");
             else
-                Debug.WriteLine($"Shell is navigating from {args.Current.Location} to {args.Target.Location} by {args.Source}");
-#endif
+                App.logger.LogEntry($"Shell is navigating from {args.Current.Location} to {args.Target.Location} by {args.Source}");
         }
 
         /*
@@ -37,14 +33,12 @@ namespace ClockWatchTimeManager
         {
             base.OnNavigated(args);
 
-#if DEBUG
             if (args.Current == null)
-                Debug.WriteLine($"Shell has navigated from {args.Previous.Location} by {args.Source}");
+                App.logger.LogEntry($"Shell has navigated from {args.Previous.Location} by {args.Source}");
             else if (args.Previous == null)
-                Debug.WriteLine($"Shell has navigated to {args.Current.Location} by {args.Source}");
+                App.logger.LogEntry($"Shell has navigated to {args.Current.Location} by {args.Source}");
             else
-                Debug.WriteLine($"Shell has navigated to {args.Current.Location} from {args.Previous.Location} by {args.Source}");
-#endif
+                App.logger.LogEntry($"Shell has navigated to {args.Current.Location} from {args.Previous.Location} by {args.Source}");
         }
     }
 }

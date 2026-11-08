@@ -23,7 +23,7 @@ namespace ClockWatchTimeManager.Models
         /*
          * Returns a string representation of this catalog in the format:
          * Time Cards:
-         * ********************
+         * ====================
          * <Time Card 1>
          * --------------------
          * <Time Card 2>
@@ -36,7 +36,7 @@ namespace ClockWatchTimeManager.Models
         {
             string str = "Time Cards:\n";
 
-            str += "".PadLeft(20, '*');
+            str += "".PadLeft(20, '=');
 
             if (Catalog.Count != 0)
             {

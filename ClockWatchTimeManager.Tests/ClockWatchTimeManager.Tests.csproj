@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Clock Watch Time Manager\ClockWatchTimeManager.csproj" />
+    <ProjectReference Include="..\ClockWatchTimeManager\ClockWatchTimeManager.csproj" />
   </ItemGroup>
 
   <ItemGroup>

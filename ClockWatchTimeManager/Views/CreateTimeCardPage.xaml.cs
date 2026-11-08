@@ -8,9 +8,7 @@ public partial class CreateTimeCardPage : ContentPage
     {
         InitializeComponent();
 
-#if DEBUG
-        Debug.WriteLine("Called CreateTimeCardPage()");
-#endif
+        App.logger.LogEntry("Called CreateTimeCardPage()");
     }
 }
 

@@ -8,8 +8,6 @@ public partial class ShowTimeCardsPage : ContentPage
 	{
 		InitializeComponent();
 
-#if DEBUG
-        Debug.WriteLine("Called ShowTimeCardsPage()");
-#endif
+        App.logger.LogEntry("Called ShowTimeCardsPage()");
     }
 }

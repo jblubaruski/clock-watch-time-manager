@@ -1,4 +1,5 @@
 ﻿using ClockWatchTimeManager;
+using FileUtility.Text;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -25,10 +26,6 @@ namespace ClockWatchTimeManager
                     fonts.AddFont("BAHNSCHRIFT-Regular.ttf", "Bahnshcrift");
                 });
 
-#if DEBUG
-    		builder.Logging.AddDebug();
-            Debug.WriteLine("Ran CreateMauiApp()");
-#endif
             return builder.Build();
         }
     }
