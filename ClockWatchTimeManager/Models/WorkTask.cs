@@ -31,9 +31,9 @@ namespace ClockWatchTimeManager.Models
             string taskString = "";
 
             if (WorkTaskStartDateTime != null)
-                taskString += $"Task start: {WorkTaskStartDateTime:MM/dd/yyyy hh:mm:ss tt}\n";
+                taskString += $"Task start:  {WorkTaskStartDateTime:MM/dd/yyyy hh:mm:ss tt}\n";
             else
-                taskString += "Task start: --/--/---- --:--:-- --\n";
+                taskString += "Task start:  --/--/---- --:--:-- --\n";
 
             if (WorkTaskDescription != null)
                 taskString += $"{WorkTaskDescription}\n";
@@ -41,9 +41,9 @@ namespace ClockWatchTimeManager.Models
                 taskString += "---\n";
 
             if (WorkTaskEndDateTime != null)
-                taskString += $"Task end:   {WorkTaskEndDateTime:MM/dd/yyyy hh:mm:ss tt}";
+                taskString += $"Task end:    {WorkTaskEndDateTime:MM/dd/yyyy hh:mm:ss tt}";
             else
-                taskString += "Task end:   --/--/---- --:--:-- --";
+                taskString += "Task end:    --/--/---- --:--:-- --";
 
             return taskString;
         }
