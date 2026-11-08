@@ -13,8 +13,6 @@ namespace FileUtility.Tests.FileManagerTests
      * Assert that a directory is created if the directory does not already exist
      * Assert that a file is created in the temp testing directory
      * Assert that the file is closed after creation
-     * Assert that the manager has a null reference to its StreamReader
-     * Assert that the manager has a null reference to its StreamWriter
      */
     public class ConstructorTest
     {
@@ -36,8 +34,10 @@ namespace FileUtility.Tests.FileManagerTests
             string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
 
             FileManager_Test testManager = new(directoryPath);
+
             bool result = Directory.Exists(directoryPath);
-            TestServices.RunTestCleanup(testManager, directoryPath);
+
+            TestServices.RemoveTestDirectory(directoryPath);
 
             Assert.True(result);
         }
@@ -49,8 +49,10 @@ namespace FileUtility.Tests.FileManagerTests
             string filename = FileManager_Test.TESTING_TEMP_FILENAME + FileManager_Test.TESTING_EXTENSION;
 
             FileManager_Test testManager = new(directoryPath);
+
             bool result = File.Exists(Path.Combine(directoryPath, filename));
-            TestServices.RunTestCleanup(testManager, directoryPath);
+
+            TestServices.RemoveTestDirectory(directoryPath);
 
             Assert.True(result);
         }
@@ -62,6 +64,7 @@ namespace FileUtility.Tests.FileManagerTests
             string filename = FileManager_Test.TESTING_TEMP_FILENAME + FileManager_Test.TESTING_EXTENSION;
 
             FileManager_Test testManager = new(directoryPath);
+
             bool result = true;
             try
             {
@@ -72,31 +75,8 @@ namespace FileUtility.Tests.FileManagerTests
             {
                 result = false;
             }
-            TestServices.RunTestCleanup(testManager, directoryPath);
 
-            Assert.True(result);
-        }
-        [Fact]
-        public void Constructor_ValidInput_ReaderIsNull()
-        {
-            string testID = Guid.NewGuid().ToString();
-            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
-
-            FileManager_Test testManager = new(directoryPath);
-            bool result = testManager.ExposedReader == null;
-            TestServices.RunTestCleanup(testManager, directoryPath);
-
-            Assert.True(result);
-        }
-        [Fact]
-        public void Constructor_ValidInput_WriterIsNull()
-        {
-            string testID = Guid.NewGuid().ToString();
-            string directoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
-
-            FileManager_Test testManager = new(directoryPath);
-            bool result = testManager.ExposedWriter == null;
-            TestServices.RunTestCleanup(testManager, directoryPath);
+            TestServices.RemoveTestDirectory(directoryPath);
 
             Assert.True(result);
         }

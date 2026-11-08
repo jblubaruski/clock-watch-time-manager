@@ -12,7 +12,6 @@ namespace FileUtility.Tests.FileManagerTests
      * Assert that passing in an invalid directoryPath throws an ArgumentException
      * Assert that passing in a duplicate filename while overwrite is set to false throws an ArgumentException
      * Assert that trying to move a file that doesnt exist on the file system throws an InvalidOperationException
-     * Assert that trying to move an open file throws an InvalidOperationException
      * Assert that the file exists in the new directory after calling move
      */
     public class MoveTest
@@ -33,8 +32,8 @@ namespace FileUtility.Tests.FileManagerTests
                     () => testManager.Move(newDirectoryPath, overwrite)
                 );
 
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
+            TestServices.RemoveTestDirectory(originalDirectoryPath);
+            TestServices.RemoveTestDirectory(newDirectoryPath);
         }
         [Fact]
         public void Move_DuplicateFileOverwriteFalse_ThrowArgumentException()
@@ -48,15 +47,17 @@ namespace FileUtility.Tests.FileManagerTests
 
             FileManager_Test testManager = new(filename, originalDirectoryPath);
             Directory.CreateDirectory(newDirectoryPath);
-            TestServices.CreateThreeClosedTestFiles(newDirectoryPath, extension);
+            TestServices.CreateClosedEmptyTestFile("a", extension, newDirectoryPath);
+            TestServices.CreateClosedEmptyTestFile("b", extension, newDirectoryPath);
+            TestServices.CreateClosedEmptyTestFile("c", extension, newDirectoryPath);
 
             Assert.Throws<ArgumentException>
                 (
                     () => testManager.Move(newDirectoryPath, overwrite)
                 );
 
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
+            TestServices.RemoveTestDirectory(originalDirectoryPath);
+            TestServices.RemoveTestDirectory(newDirectoryPath);
         }
         [Fact]
         public void Move_FileDoesNotExist_ThrowInvalidOperationException()
@@ -77,28 +78,8 @@ namespace FileUtility.Tests.FileManagerTests
                     () => testManager.Move(newDirectoryPath, overwrite)
                 );
 
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
-        }
-        [Fact]
-        public void Move_FileIsOpen_ThrowInvalidOperationException()
-        {
-            string testID = Guid.NewGuid().ToString();
-            string originalDirectoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
-            string newDirectoryPath = FileManager_Test.TESTING_MOVETO_DIRECTORY + testID;
-            FileAccess fileAccess = FileAccess.ReadWrite;
-            bool overwrite = false;
-
-            FileManager_Test testManager = new(originalDirectoryPath, fileAccess);
-            Directory.CreateDirectory(newDirectoryPath);
-
-            Assert.Throws<InvalidOperationException>
-                (
-                    () => testManager.Move(newDirectoryPath, overwrite)
-                );
-
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
+            TestServices.RemoveTestDirectory(originalDirectoryPath);
+            TestServices.RemoveTestDirectory(newDirectoryPath);
         }
         [Fact]
         public void Move_ValidStateOverwriteOff_FileExistsInNewDirectory()
@@ -113,10 +94,11 @@ namespace FileUtility.Tests.FileManagerTests
             FileManager_Test testManager = new(filename, originalDirectoryPath);
             Directory.CreateDirectory(newDirectoryPath);
             testManager.Move(newDirectoryPath, overwrite);
+
             bool result = File.Exists(Path.Combine(newDirectoryPath, filename + extension));
 
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
+            TestServices.RemoveTestDirectory(originalDirectoryPath);
+            TestServices.RemoveTestDirectory(newDirectoryPath);
 
             Assert.True(result);
         }

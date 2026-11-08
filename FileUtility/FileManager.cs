@@ -10,13 +10,10 @@ namespace FileUtility
      */
     public class FileManager : IFileManager
     {
-        private const FileMode FILEMODE = FileMode.Open;
-
         protected string Filepath { get; set; }
-        protected string DirectoryPath { get; set; }
+        protected string BaseFilename { get; set; }
         protected string Extension { get; set; }
-        protected StreamReader? Reader { get; set; }
-        protected StreamWriter? Writer { get; set; }
+        protected string DirectoryPath { get; set; }
 
         /*
          * Validates the passed in filepath and creates a file at that location while creating a directory if needed.
@@ -30,18 +27,15 @@ namespace FileUtility
             if (!FileValidator.FilepathIsValid(baseFilename, extension, directoryPath, out string errorMessage))
                 throw new ArgumentException(errorMessage);
 
-            Filepath = Path.Combine(directoryPath, baseFilename) + extension;
-            DirectoryPath = directoryPath;
+            Filepath = Path.Combine(directoryPath, baseFilename + extension);
+            BaseFilename = baseFilename;
             Extension = extension;
+            DirectoryPath = directoryPath;
 
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
 
-            FileStream fs = File.Create(Filepath);
-
-            fs.Close();
-            Reader = null;
-            Writer = null;
+            using FileStream fs = File.Create(Filepath);
         }
 
         /*
@@ -50,74 +44,16 @@ namespace FileUtility
         public bool FileExists() => File.Exists(Filepath);
 
         /*
-         * Returns true if this file has open filestreams associated with it
-         */
-        public bool IsOpen()
-        {
-            bool isOpen = Reader != null || Writer != null;
-
-            if (Reader != null)
-                isOpen = Reader.BaseStream.CanRead || Reader.BaseStream.CanWrite;
-            if (Writer != null)
-                isOpen = Writer.BaseStream.CanRead || Writer.BaseStream.CanWrite;
-
-            return isOpen;
-        }
-
-        /*
-         * Opens the file using the passed in options.
-         * Opens a read-write file that declines file sharing by default.
+         * Creates the file on the file system if it doesnt already exist.
          * 
-         * fileAccess determines whether the file is read-only, write-only or read-write
-         * fileShare determines how much access other operations have to this file
-         * 
-         * Throws an InvalidOperationException if the file is currently open
-         * Throws an InvalidOperationException if this file does not exist on the file system
+         * Does nothing if the file already exists
          */
-        public void Open(FileAccess fileAccess = FileAccess.ReadWrite, FileShare fileShare = FileShare.None)
+        public void CreateFile()
         {
             if (!FileExists())
-                throw new InvalidOperationException($"the file at {Filepath} must exist in order to open it");
-            if (IsOpen())
-                throw new InvalidOperationException($"cannot open the file at {Filepath} while it is already open");
-
-            FileStream fs = File.Open(Filepath, FILEMODE, fileAccess, fileShare);
-            if (fileAccess == FileAccess.Read)
             {
-                Reader = new(fs);
+                using FileStream fs = File.Create(Filepath);
             }
-            else if (fileAccess == FileAccess.Write)
-            {
-                Writer = new(fs);
-            }
-            else
-            {
-                Reader = new(fs);
-                Writer = new(fs);
-            }
-        }
-
-        /*
-         * Closes the file.
-         * 
-         * Throws an InvalidOperationException if this file does not exist on the file system
-         */
-        public void Close()
-        {
-            if (!FileExists())
-                throw new InvalidOperationException("the file must exist on the file system in order to close it");
-            
-            if (Reader != null && IsOpen())
-            {
-                Reader.Close();
-            }   
-            else if (Writer != null && IsOpen())
-            {
-                Writer.Close();
-            }
-
-            Reader = null;
-            Writer = null;
         }
 
         /*
@@ -127,7 +63,6 @@ namespace FileUtility
          * 
          * Throws an ArgumentException if the newFilename is an invalid base filename
          * Throws an ArgumentException if a file with the same name as the new name (case-insensitive) already exists in the current directory
-         * Throws an InvalidOperationException if the original file is open
          */
         public void Rename(string newFilename)
         {
@@ -136,8 +71,6 @@ namespace FileUtility
                 throw new ArgumentException(errorMessage);
             if (FileExistsInDirectory(newFilename, Extension, DirectoryPath))
                 throw new ArgumentException($"newFilename ({newFilename}) cannot match another filename in {DirectoryPath}");
-            if (IsOpen())
-                throw new InvalidOperationException("An open file cannot be renamed");
 
             string newFilepath = Path.Combine(DirectoryPath, newFilename + Extension);
 
@@ -156,7 +89,6 @@ namespace FileUtility
          * Throws an ArgumentException if the newFilename is an invalid base filename
          * Throws an ArgumentException if the newFilename is the same as another file in the current directory and overwrite is false
          * Throws an InvalidOperationException if this file does not exist on the file system
-         * Throws an InvalidOperationException if this file is open
          */
         public IFileManager Copy(string newFilename, bool overwrite) => Copy(newFilename, DirectoryPath, overwrite);
 
@@ -171,7 +103,6 @@ namespace FileUtility
          * Throws an ArgumentException if the newFilename is the same as the original file's filename while overwrite is true and newDirectory is the same as DirectoryPath
          * Throws an ArgumentException if the newFilename is the same as another file in the new directory and overwrite is false
          * Throws an InvalidOperationException if this file does not exist on the file system
-         * Throws an InvalidOperationException if this file is open
          */
         public IFileManager Copy(string newFilename, string newDirectoryPath, bool overwrite)
         {
@@ -184,8 +115,6 @@ namespace FileUtility
                 throw new ArgumentException($"newFilename ({newFilename}) cannot match another filename in {newDirectoryPath}");
             if (!FileExists())
                 throw new InvalidOperationException("A file can only be moved if it exists in the file system");
-            if (IsOpen())
-                throw new InvalidOperationException("An open file cannot be moved");
 
             FileManager newManager = new(newFilename, Extension, newDirectoryPath);
             File.Copy(Filepath, Path.Combine(newDirectoryPath, newFilename + Extension), true);
@@ -202,7 +131,6 @@ namespace FileUtility
          * Throws an ArgumentException if newDirectoryPath is an invalid directory path
          * Throws an ArgumentException if the newFilename is the same as another file in the new directory and overwrite is false
          * Throws an InvalidOperationException if this file does not exist on the file system
-         * Throws an InvalidOperationException if this file is open
          */
         public void Move(string newDirectoryPath, bool overwrite)
         {
@@ -212,8 +140,6 @@ namespace FileUtility
                 throw new ArgumentException($"newFilename ({Path.GetFileName(Filepath)}) cannot match another filename in {newDirectoryPath}");
             if (!FileExists())
                 throw new InvalidOperationException("A file can only be moved if it exists in the file system");
-            if (IsOpen())
-                throw new InvalidOperationException("An open file cannot be moved");
 
             File.Move(Filepath, Path.Combine(newDirectoryPath, Path.GetFileName(Filepath)), overwrite);
         }
@@ -221,14 +147,12 @@ namespace FileUtility
         /*
          * Deletes this file from the file system
          * 
-         * Throws an InvalidOperationException if this file is open
+         * Does nothing if the file doesnt exist already
          */
         public void Delete()
         {
-            if (IsOpen())
-                throw new InvalidOperationException($"{Filepath} cannot be deleted if it is currently open");
-
-            File.Delete(Filepath);
+            if (FileExists())
+                File.Delete(Filepath);
         }
 
         /*

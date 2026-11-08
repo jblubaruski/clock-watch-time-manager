@@ -20,7 +20,6 @@ namespace FileUtility.Text
          * Lines are separated with newline characters.
          * If the file is empty, a null value is returned.
          * 
-         * Throws an InvalidOperationException if the file is closed
          * Throws an InvalidOperationException if the file does not exist
          * Throws an InvalidOperationException if the file is write-only
          */
@@ -34,7 +33,6 @@ namespace FileUtility.Text
          * 
          * If there is no next line to read from the file, a null value is returned.
          * 
-         * Throws an InvalidOperationException if the file is closed
          * Throws an InvalidOperationException if the file does not exist
          * Throws an InvalidOperationException if the file is write-only
          */
@@ -47,7 +45,6 @@ namespace FileUtility.Text
          * Overwrites a file with the content of the passed in string.
          * 
          * Throws an ArgumentException if the passed in string is null
-         * Throws an InvalidOperationException if the file is closed
          * Throws an InvalidOperationException if the file does not exist
          * Throws an InvalidOperationException if the file is read-only
          */
@@ -60,7 +57,6 @@ namespace FileUtility.Text
          * Appends the passed in string to the end of the file as a new line.
          * 
          * Throws an ArgumentException if the passed in string is null
-         * Throws an InvalidOperationException if the file is closed
          * Throws an InvalidOperationException if the file does not exist
          * Throws an InvalidOperationException if the file is read-only
          */

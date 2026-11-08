@@ -12,7 +12,6 @@ namespace FileUtility.Tests.FileManagerTests
      * Assert that passing in an invalid base filename throws an ArgumentException
      * Assert that passing in a filename that is the same as a file in the passed in directory while overwrite is false throws an ArgumentException
      * Assert that trying to copy a file that does not exist on the file system throws an InvalidOperationException
-     * Assert that trying to copy an open file throws an InvalidOperationException
      * Assert that copying a file creates a new file in the passed in directory with the passed in filename
      */
     public class Copy2Test
@@ -35,8 +34,8 @@ namespace FileUtility.Tests.FileManagerTests
                     () => testManager.Copy(newFilename, newDirectoryPath, overwrite)
                 );
 
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
+            TestServices.RemoveTestDirectory(originalDirectoryPath);
+            TestServices.RemoveTestDirectory(newDirectoryPath);
         }
         [Fact]
         public void Copy2_DuplicateFilename_ThrowArgumentException()
@@ -50,15 +49,17 @@ namespace FileUtility.Tests.FileManagerTests
 
             FileManager_Test testManager = new(originalDirectoryPath);
             Directory.CreateDirectory(newDirectoryPath);
-            TestServices.CreateThreeClosedTestFiles(newDirectoryPath, extension);
+            TestServices.CreateClosedEmptyTestFile("a", extension, newDirectoryPath);
+            TestServices.CreateClosedEmptyTestFile("b", extension, newDirectoryPath);
+            TestServices.CreateClosedEmptyTestFile("c", extension, newDirectoryPath);
 
             Assert.Throws<ArgumentException>
                 (
                     () => testManager.Copy(newFilename, newDirectoryPath, overwrite)
                 );
 
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
+            TestServices.RemoveTestDirectory(originalDirectoryPath);
+            TestServices.RemoveTestDirectory(newDirectoryPath);
         }
         [Fact]
         public void Copy2_FileDoesNotExist_ThrowInvalidOperationException()
@@ -80,29 +81,8 @@ namespace FileUtility.Tests.FileManagerTests
                     () => testManager.Copy(newFilename, newDirectoryPath, overwrite)
                 );
 
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
-        }
-        [Fact]
-        public void Copy2_FileIsAlreadyOpen_ThrowInvalidOperationException()
-        {
-            string testID = Guid.NewGuid().ToString();
-            string originalDirectoryPath = FileManager_Test.TESTING_TEMP_DIRECTORY + testID;
-            string newDirectoryPath = FileManager_Test.TESTING_COPYTO_DIRECTORY + testID;
-            string newFilename = FileManager_Test.TESTING_DUPLICATE_FILENAME;
-            FileAccess fileAccess = FileAccess.ReadWrite;
-            bool overwrite = false;
-
-            FileManager_Test testManager = new(originalDirectoryPath, fileAccess);
-            Directory.CreateDirectory(newDirectoryPath);
-
-            Assert.Throws<InvalidOperationException>
-                (
-                    () => testManager.Copy(newFilename, newDirectoryPath, overwrite)
-                );
-
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
+            TestServices.RemoveTestDirectory(originalDirectoryPath);
+            TestServices.RemoveTestDirectory(newDirectoryPath);
         }
         [Fact]
         public void Copy2_ValidState_CopyReturnsFileManagerOfCopy()
@@ -116,9 +96,11 @@ namespace FileUtility.Tests.FileManagerTests
             FileManager_Test testManager = new(originalDirectoryPath);
             Directory.CreateDirectory(newDirectoryPath);
             IFileManager copy = testManager.Copy(newFilename, newDirectoryPath, overwrite);
+
             bool result = copy != null;
-            TestServices.RunTestCleanup(testManager, originalDirectoryPath);
-            TestServices.RunTestCleanup(testManager, newDirectoryPath);
+
+            TestServices.RemoveTestDirectory(originalDirectoryPath);
+            TestServices.RemoveTestDirectory(newDirectoryPath);
 
             Assert.True(result);
         }

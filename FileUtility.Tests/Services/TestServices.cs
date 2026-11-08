@@ -7,30 +7,37 @@ namespace FileUtility.Tests.Services
 {
     internal class TestServices
     {
-        // closes any potentially open files and deletes any created directories
-        public static void RunTestCleanup(FileManager_Test testManager, string directoryPath)
+        // removes a test directory
+        public static void RemoveTestDirectory(string directoryPath) => Directory.Delete(directoryPath, true);
+
+        // creates a closed empty file with the passed in base filename and extension in the passed in directory
+        // doesnt do anything if the file already exist
+        public static void CreateClosedEmptyTestFile(string baseFilename, string extension, string directoryPath)
         {
-            try
-            {
-                testManager.ExposedReader?.Close();
-            }
-            catch (Exception) { }
+            string filepath = Path.Combine(directoryPath, baseFilename + extension);
 
-            try
+            if (!File.Exists(filepath))
             {
-                testManager.ExposedWriter?.Close();
-            }
-            catch (Exception) { }
-
-            Directory.Delete(directoryPath, true);
+                using FileStream fs = File.Create(filepath);
+            }       
         }
 
-        // creates three closed test files names "a{extension}", "b{extension}", and "c{extension" in the passed in directory
-        public static void CreateThreeClosedTestFiles(string directoryPath, string extension)
+        // overwrites the closed test .txt file with the passed in string
+        public static void FillClosedTestFileWithContentString(TextFileManager_Test testManager, string content)
         {
-            using (FileStream fs = File.Create(Path.Combine(directoryPath, "a" + extension))) { }
-            using (FileStream fs = File.Create(Path.Combine(directoryPath, "b" + extension))) { }
-            using (FileStream fs = File.Create(Path.Combine(directoryPath, "c" + extension))) { }
+            using StreamWriter writer = new(testManager.ExposedFilepath, false);
+            writer.WriteLine(content);
+        }
+
+        // overwrites the closed test .txt file with the passed in string array
+        public static void FillClosedTestFileWithContentStringArray(TextFileManager_Test testManager, string[] content)
+        {
+            using StreamWriter writer = new(testManager.ExposedFilepath, false);
+            
+            foreach (string line in content)
+            {
+                writer.WriteLine(line);
+            }
         }
     }
 }
