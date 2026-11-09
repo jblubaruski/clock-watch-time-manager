@@ -6,12 +6,6 @@
     <Build Solution="Release|*" Project="false" />
   </Project>
   <Project Path="BusinessManagementLibrary/BusinessManagementLibrary.csproj" />
-  <Project Path="ClockWatchTimeManager.Tests/ClockWatchTimeManager.Tests.csproj" Id="c758c0cb-3228-407b-a737-67c6adb54f10">
-    <Build Solution="Release|*" Project="false" />
-  </Project>
   <Project Path="ClockWatchTimeManager/ClockWatchTimeManager.csproj" />
-  <Project Path="FileUtility.Tests/FileUtility.Tests.csproj" Id="c3b42720-1d5b-4544-a439-9b2404c46c2f">
-    <Build Solution="Release|*" Project="false" />
-  </Project>
   <Project Path="FileUtility/FileUtility.csproj" Id="d8c70555-6fd8-4932-b7dd-6d214a8d5055" />
 </Solution>

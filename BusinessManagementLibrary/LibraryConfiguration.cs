@@ -4,10 +4,3 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 [assembly: InternalsVisibleTo("BusinessManagementLibrary.Tests")]
-
-namespace BusinessManagementLibrary
-{
-    internal class LibraryConfiguration
-    {
-    }
-}

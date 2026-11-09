@@ -13,7 +13,7 @@ namespace ClockWatchTimeManager
         private const int WINDOW_HEIGHT = 540;
 
         internal static readonly Logger logger = new("log", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "PlaypenSoftware", "ClockWatchTimeManager"));
-        internal static readonly TimeCardCatalog catalog = new();
+        internal static readonly TimecardCatalog catalog = new();
 
         public App()
         {
