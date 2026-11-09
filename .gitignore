@@ -361,8 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-# Test folders
-BusinessManagementLibrary.Tests
-ClockWatchTimeManager.Tests
-FileUtility.Tests
