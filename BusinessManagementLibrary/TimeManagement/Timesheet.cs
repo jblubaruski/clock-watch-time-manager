@@ -27,7 +27,14 @@ namespace BusinessManagementLibrary.TimeManagement
          */
         public int AddTimesheetEntry(DateTime? startTime, DateTime? endTime, string? description, bool isBreak = true)
         {
-            if (startTime != null && endTime != null && endTime <= startTime)
+            bool startTimeIsNull = startTime == null;
+            bool endTimeIsNull = endTime == null;
+
+            if (!startTimeIsNull && !endTimeIsNull && endTime <= startTime)
+                return -1;
+            if (!startTimeIsNull && OverlapsWithEntry(startTime))
+                return -1;
+            if (!endTimeIsNull && OverlapsWithEntry(endTime))
                 return -1;
 
             // assign the break ID to be one above the highest already existing breakID
@@ -39,8 +46,15 @@ namespace BusinessManagementLibrary.TimeManagement
         /*
          * Returns true if the passed in start and end time overlaps with another break or a task
          */
-        private bool OverlapsWithBreakOrTask(DateTime? startTime, DateTime? endTime)
+        private bool OverlapsWithEntry(DateTime? testTime)
         {
+            foreach (TimesheetEntry entry in EntryList)
+            {
+                if (entry.StartTime != null && entry.EndTime != null)
+                {
+
+                }
+            }    
             return false;
         }
     }
