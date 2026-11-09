@@ -1,22 +1,23 @@
-﻿using System;
+﻿using BusinessManagementLibrary.TimeManagement;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BusinessApplicationModels.TimeManagement
+namespace BusinessManagementLibrary.TimeManagement
 {
-    public class TimeCardCatalog
+    public class TimecardCatalog
     {
         /*
          * Contains and manages a collection of timecards
          */
-        private List<TimeCard> Catalog { get; } = [];
+        private List<Timecard> Catalog { get; } = [];
 
         /*
          * Adds the passed in time card to the catalog
          * 
          * Throws an ArgumentNullException if a null timecard is passed in
          */
-        public void AddTimeCard(TimeCard timecard)
+        public void AddTimeCard(Timecard timecard)
         {
             ArgumentNullException.ThrowIfNull(timecard);
             Catalog.Add(timecard);

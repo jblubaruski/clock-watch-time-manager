@@ -92,6 +92,7 @@
 	<ItemGroup>
 	  <Folder Include="Interfaces\" />
 	  <Folder Include="Models\" />
+	  <Folder Include="Services\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -102,7 +103,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\BusinessApplicationModels\BusinessApplicationModels.csproj" />
+	  <ProjectReference Include="..\BusinessManagementLibrary\BusinessManagementLibrary.csproj" />
 	  <ProjectReference Include="..\FileUtility\FileUtility.csproj" />
 	</ItemGroup>
 

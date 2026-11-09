@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClockWatchTimeManager.Services
+namespace FileUtility.Logging
 {
     /*
      * Writes logs to the program's log file
      */
-    internal class Logger : TextFileManager
+    public class Logger : TextFileManager
     {
         /*
          * Constructs a logger and then removes all content from the logs file if it exists
@@ -27,8 +27,10 @@ namespace ClockWatchTimeManager.Services
          * ************************************************************
          * {entry time (HH:mm:ss zzz)} on {entry date (MM/dd/yyyy)}
          * ************************************************************
-         * {entry data}
-         * 
+         * {entry line 1}
+         * {entry line 2}
+         * ...
+         * {blank line}
          */
         public void LogEntry(params string[] entryLines)
         {

@@ -1,17 +1,18 @@
-﻿using System;
+﻿using BusinessManagementLibrary.TimeManagement;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BusinessApplicationModels.TimeManagement
+namespace BusinessManagementLibrary.TimeManagement
 {
     /*
      * Represents a single work period.
      * Includes the start and stop time and date of the work period as well as 
      * the timesheet containing the breaks taken and tasks worked during the work period.
      */
-    public class TimeCard
+    public class Timecard
     {
-        private TimeSheet TimeSheet { get; } = new();
+        private Timesheet TimeSheet { get; } = new();
         public DateTime? ClockInDateTime { get; set; } = null;
         public DateTime? ClockOutDateTime { get; set; } = null;
 

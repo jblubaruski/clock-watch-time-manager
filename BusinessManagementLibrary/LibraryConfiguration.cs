@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-[assembly: InternalsVisibleTo("BusinessApplicationModels.Tests")]
+[assembly: InternalsVisibleTo("BusinessManagementLibrary.Tests")]
 
-namespace BusinessApplicationModels
+namespace BusinessManagementLibrary
 {
     internal class LibraryConfiguration
     {

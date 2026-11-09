@@ -1,4 +1,4 @@
-﻿using BusinessApplicationModels.TimeManagement;
+﻿using BusinessManagementLibrary.TimeManagement;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -64,7 +64,7 @@ partial class CreateTimeCardViewModel : ObservableObject
      */
 
     // the current time card
-    private TimeCard Timecard { get; set; } = new();
+    private Timecard Timecard { get; set; } = new();
 
     /*
      * COMMANDS
