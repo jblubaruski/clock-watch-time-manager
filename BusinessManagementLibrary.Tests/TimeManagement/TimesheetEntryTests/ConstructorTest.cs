@@ -6,7 +6,9 @@ using System.Text;
 
 namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
 {
-    /*
+    // TODO UPDATE TO REFLECT CHANGES TO CONSTRUCTOR
+
+    /* 
      * Test for TimesheetEntry.TimesheetEntry(EntryType, int, DateTime?, DateTime?, string?)
      * 
      * Assert that passing in a default entry type to entryType throws an ArgumentException

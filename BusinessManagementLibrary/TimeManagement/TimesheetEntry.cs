@@ -5,13 +5,16 @@ using System.Text;
 
 namespace BusinessManagementLibrary.TimeManagement
 {
+    // TODO UPDATE CONSTRUCTOR TEST
+
     /*
      * Represents a single entry in a timesheet.
      */
-    public class TimesheetEntry
+    public class TimesheetEntry : IEntry
     {
         public EntryType EntryType { get; }
         public int EntryID { get; }
+
         public string? Description { get; set; }
 
         private DateTime? _startTime;
@@ -43,37 +46,22 @@ namespace BusinessManagementLibrary.TimeManagement
         /*
          * Constructs a new timesheet entry from the passed in data.
          * 
-         * entryType is this entry's EntryType
-         * --It can either be EntryType.Break or EntryType.Task
          * entryID is the identifying number for this entry
          * --It cannot be a negative value
-         * startTime is this entry's starting time and date
-         * --It cannot be greater than or equal to endTime if both startTime and endTime are not null
-         * endTime is this entry's end time and date
-         * --It cannot be less than or equal to startTime if both startTime and endTime are not null
-         * description is this entry's description
+         * entryData contains the data contained within this timesheet entry
          * 
-         * Throws an ArgumentException if entryType is neither an EntryType.Break or EntryType.Task
          * Throws an ArgumentException if entryID is a negative integer
-         * Throws an ArgumentException if both startTime and endTime arent null and startTime is greater than or equal to endTime
          */
-        public TimesheetEntry(EntryType entryType, int entryID, DateTime? startTime, DateTime? endTime, string? description)
+        public TimesheetEntry(int entryID, TimesheetEntryData entryData)
         {
-            if (entryType != EntryType.Break && entryType != EntryType.Task)
-                throw new ArgumentException($"entryType can only be either EntryType.Break or EntryType.Task (was {entryType})");
             if (entryID < 0)
                 throw new ArgumentException($"entryID cannot be a negative value (was {entryID})");
-            if (startTime != null && endTime != null)
-            {
-                if (startTime >= endTime)
-                    throw new ArgumentException($"startTime ({startTime}) must be less than endTime ({endTime})");
-            }
             
-            EntryType = entryType;
-            EntryID = entryID;
-            _startTime = startTime;
-            _endTime = endTime;
-            Description = description;
+            EntryType   = entryData.IsBreak ? EntryType.Break : EntryType.Task;
+            EntryID     = entryID;
+            _startTime  = entryData.StartTime;
+            _endTime    = entryData.EndTime;
+            Description = entryData.Description;
         }
 
         /*

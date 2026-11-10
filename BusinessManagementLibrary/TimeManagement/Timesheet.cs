@@ -1,61 +1,118 @@
-﻿using BusinessManagementLibrary.TimeManagement;
+﻿using BusinessManagementLibrary.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace BusinessManagementLibrary.TimeManagement
 {
+    // TODO MERGE WITH TIMECARD
+
     /*
-     * Contains and manages all the breaks and tasks taken and carried out during the work period.
+     * Contains and manages the entries (breaks and tasks) on the timesheet
      */
     public class Timesheet
     {
-        private List<TimesheetEntry> EntryList { get; } = [];
+        private List<IEntry> EntryList { get; } = [];
 
         /*
-         * Creates a new timesheet entry from the passed in data, adds it to the timesheet, and returns the entries's ID.
+         * Creates a new timesheet entry from the passed in entry data, adds it to the timesheet, and returns the entry's ID.
          * 
-         * startTime is the entry's start time and date
-         * endTime is the entry's end time and date
-         * description is the entry's description
-         * isBreak determines whether the entry is a break or task (true is a break, false is a task)
+         * data is the container holding the data for the timesheet entry
+         * --It must be of the type TimesheetEntryData
+         * --Its start and end time cannot overlap with another entry in the timesheet
          * 
-         * The start time must be less than the end time and they cannot be equal to each other (if both are not null)
-         * Both the start and end time must exist entirely outide any timespan covered by another entry in the timesheet (if either are not null)
-         * 
-         * Returns -1 if the entry could not be added
+         * Throws an ArgumentException if entryData is not of the type TimesheetEntryData
+         * Throws an ArgumentException if the passed in data container has a non-null start or end time that overlaps with another entry whose start and end time are both not null
          */
-        public int AddTimesheetEntry(DateTime? startTime, DateTime? endTime, string? description, bool isBreak = true)
+        public int AddEntry(IEntryData data)
         {
-            bool startTimeIsNull = startTime == null;
-            bool endTimeIsNull = endTime == null;
+            if (data is not TimesheetEntryData)
+                throw new ArgumentException($"entryData must be of the type {typeof(TimesheetEntryData)} but is {data.GetType()} instead");
 
-            if (!startTimeIsNull && !endTimeIsNull && endTime <= startTime)
-                return -1;
-            if (!startTimeIsNull && OverlapsWithEntry(startTime))
-                return -1;
-            if (!endTimeIsNull && OverlapsWithEntry(endTime))
-                return -1;
+            TimesheetEntryData entryData = (TimesheetEntryData)data;
 
-            // assign the break ID to be one above the highest already existing breakID
-            int breakID = 0;
+            if (EntryTimesOverlapWithAnotherEntry(entryData))
+                throw new ArgumentException($"The non-null start or end time within the passed in container cannot overlap with another entry whose start and end times are both not null");
 
-            return breakID;
+            int entryID = GetHighestEntryID() + 1;
+
+            EntryList.Add(new TimesheetEntry(entryID, entryData));
+
+            return entryID;
         }
 
         /*
-         * Returns true if the passed in start and end time overlaps with another break or a task
+         * Retrieves the entry corresponding to the passed in entry ID
+         * 
+         * Returns null if an entry with the passed in value doesn't exist in the timesheet
          */
-        private bool OverlapsWithEntry(DateTime? testTime)
+        public IEntry? GetEntry(int entryID)
         {
-            foreach (TimesheetEntry entry in EntryList)
-            {
-                if (entry.StartTime != null && entry.EndTime != null)
-                {
+            IEntry? requestedEntry = null;
 
-                }
-            }    
+            foreach (IEntry entry in EntryList)
+            {
+                if (entry.EntryID == entryID)
+                    requestedEntry = entry;
+            }
+
+            return requestedEntry;
+        }
+
+        /*
+         * Removes the entry corresponding to the passed in entry ID
+         */
+        public void RemoveEntry(int entryID)
+        {
+            foreach(IEntry entry in EntryList)
+            {
+                if (entry.EntryID == entryID)
+                    EntryList.Remove(entry);
+            }
+        }
+
+        /*
+         * Returns true if the timesheet contains an entry corresponding to the passed in entry ID
+         */
+        public bool ContainsEntry(int entryID)
+        {
+            foreach (IEntry entry in EntryList)
+            {
+                if (entry.EntryID == entryID)
+                    return true;
+            }
             return false;
+        }
+
+        /*
+         * Returns true if the passed in TimesheetEntryData contains a start and/or end time that overlaps with an entry in the timesheet
+         * Returns false if there are no entries in the timesheet
+         */
+        private bool EntryTimesOverlapWithAnotherEntry(TimesheetEntryData entryData)
+        {
+            foreach (TimesheetEntry entry in EntryList.Cast<TimesheetEntry>())
+            {
+                if (entryData.ContainedTimesOverlapWithEntry(entry))
+                    return true;
+            }
+            return false;
+        }
+
+        /*
+         * Returns the highest entryID in the list of timesheet entries
+         * Returns -1 if there are no entries in the list
+         */
+        private int GetHighestEntryID()
+        {
+            int maxID = -1;
+
+            foreach (TimesheetEntry entry in EntryList.Cast<TimesheetEntry>())
+            {
+                if (maxID < entry.EntryID)
+                    maxID = entry.EntryID;
+            }
+
+            return maxID;
         }
     }
 }
