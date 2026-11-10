@@ -139,7 +139,7 @@ namespace BusinessManagementLibrary.TimeManagement
         {
             int maxID = -1;
 
-            foreach (Timecard entry in Catalog.Cast<Timecard>())
+            foreach (IEntry entry in Catalog)
             {
                 if (maxID < entry.EntryID)
                     maxID = entry.EntryID;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessManagementLibrary.TimeManagement;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,6 +18,32 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryDataTests
         public static readonly DateTime? startTimeGreaterThan = new(2026, 7, 11, 12, 30, 0);
         public static readonly DateTime? startTimeEqualTo = endTime;
 
-        
+        [Fact]
+        public void Ctor_StartTimeGreaterThanEndTime_ThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new TimesheetEntryData(startTimeGreaterThan, endTime, "Test", true));
+        }
+        [Fact]
+        public void Ctor_StartTimeEqualToEndTime_ThrowArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => new TimesheetEntryData(startTimeEqualTo, endTime, "Test", true));
+        }
+        [Fact]
+        public void Ctor_ValidInput_PropertiesAreEqualToInputs()
+        {
+            DateTime?   startTime   = new(2026, 7, 11, 11, 30, 0);
+            string?     description = "Test";
+            bool        isBreak     = true;
+
+            TimesheetEntryData entryData = new(startTime, endTime, description, isBreak);
+
+            bool result =
+                entryData.StartTime     == startTime    &&
+                entryData.EndTime       == endTime      &&
+                entryData.Description   == description  &&
+                entryData.IsBreak       == isBreak;
+
+            Assert.True(result);
+        }
     }
 }

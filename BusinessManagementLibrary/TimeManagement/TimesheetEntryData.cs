@@ -5,8 +5,6 @@ using System.Text;
 
 namespace BusinessManagementLibrary.TimeManagement
 {
-    // TODO WRITE TESTS
-
     /*
      * Read-only container for the data used to create a TimesheetEntry
      */
@@ -44,9 +42,9 @@ namespace BusinessManagementLibrary.TimeManagement
             bool overlaps = false;
 
             if (StartTime != null)
-                overlaps &= StartTime > entry.StartTime && StartTime < entry.EndTime;
+                overlaps |= StartTime > entry.StartTime && StartTime < entry.EndTime;
             if (EndTime != null)
-                overlaps &= EndTime > entry.StartTime && EndTime < entry.EndTime;
+                overlaps |= EndTime > entry.StartTime && EndTime < entry.EndTime;
 
             return overlaps;
         }

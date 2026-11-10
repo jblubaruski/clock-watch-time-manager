@@ -5,8 +5,6 @@ using System.Text;
 
 namespace BusinessManagementLibrary.TimeManagement
 {
-    // TODO WRITE TESTS
-
     /*
      * Read-only container for the data used to create a Timecard
      */
@@ -40,9 +38,9 @@ namespace BusinessManagementLibrary.TimeManagement
             bool overlaps = false;
 
             if (ClockInTime != null)
-                overlaps &= ClockInTime > card.ClockInTime && ClockInTime < card.ClockOutTime;
+                overlaps |= ClockInTime > card.ClockInTime && ClockInTime < card.ClockOutTime;
             if (ClockOutTime != null)
-                overlaps &= ClockOutTime > card.ClockInTime && ClockOutTime < card.ClockOutTime;
+                overlaps |= ClockOutTime > card.ClockInTime && ClockOutTime < card.ClockOutTime;
 
             return overlaps;
         }
