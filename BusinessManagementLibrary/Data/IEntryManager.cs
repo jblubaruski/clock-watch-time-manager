@@ -9,7 +9,6 @@ namespace BusinessManagementLibrary.Data
      */
     public interface IEntryManager
     {
-        public List<IEntry> Entries { get; }
         public int AddEntry(IEntryData data);
         public IEntry? GetEntry(int entryID);
         public void RemoveEntry(int entryID);

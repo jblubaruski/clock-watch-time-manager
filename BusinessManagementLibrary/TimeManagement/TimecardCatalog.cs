@@ -1,26 +1,87 @@
-﻿using BusinessManagementLibrary.TimeManagement;
+﻿using BusinessManagementLibrary.Data;
+using BusinessManagementLibrary.TimeManagement;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace BusinessManagementLibrary.TimeManagement
 {
-    public class TimecardCatalog
+    // TODO WRITE TESTS
+    
+    /*
+     * Contains and manages a collection of timecards
+     */
+    public class TimecardCatalog : IEntryManager
     {
-        /*
-         * Contains and manages a collection of timecards
-         */
-        private List<Timecard> Catalog { get; } = [];
+        
+        private List<IEntry> Catalog { get; } = [];
 
         /*
-         * Adds the passed in time card to the catalog
+         * Creates a new timecard from the passed in timecard data, adds it to the catalog, and returns the timecard's ID
          * 
-         * Throws an ArgumentNullException if a null timecard is passed in
+         * data is the container holding the clock in and clock out times for the new timecard
+         * --It must be of the type TimecardData
+         * --It cannot contain a non-null clock in time and/or non-null clock out time that overlaps with the non-null clock in and out times of another timecard
+         * 
+         * Throws an ArgumentException if data is not of the type TimecardData
+         * Throws an ArgumentException if the passed in timecard contains a non-null clock in or clock out time that overlaps with another timecard containing non-null clock in and out times
          */
-        public void AddTimeCard(Timecard timecard)
+        public int AddEntry(IEntryData data)
         {
-            ArgumentNullException.ThrowIfNull(timecard);
-            Catalog.Add(timecard);
+            if (data is not TimecardData)
+                throw new ArgumentException($"data must be of the type {typeof(TimecardData)} and not {data.GetType()}");
+
+            TimecardData entryData = (TimecardData)data;
+
+            if (TimecardTimesOverlapWithAnotherTimecard(entryData))
+                throw new ArgumentException("The non-null clock in or clock out time within the passed in container cannot overlap with another timecard whose clock in and out times are both not null");
+
+            int timecardID = GetHighestEntryID() + 1;
+
+            Catalog.Add(new Timecard(timecardID, entryData));
+
+            return timecardID;
+        }
+
+        /*
+         * Retrieves the timecard corresponding to the passed in entry ID
+         * 
+         * Returns null if a timecard with the passed in value doesn't exist in the catalog
+         */
+        public IEntry? GetEntry(int entryID)
+        {
+            foreach (IEntry entry in Catalog)
+            {
+                if (entry.EntryID == entryID)
+                    return entry;
+            }
+            return null;
+        }
+
+        /*
+         * Removes the timecard corresponding to the passed in entry ID
+         */
+        public void RemoveEntry(int entryID)
+        {
+            foreach (IEntry entry in Catalog)
+            {
+                if (entry.EntryID == entryID)
+                    Catalog.Remove(entry);
+            }
+        }
+
+        /*
+         * Returns true if the timesheet contains an entry corresponding to the passed in entry ID
+         */
+        public bool ContainsEntry(int entryID)
+        {
+            foreach (IEntry entry in Catalog)
+            {
+                if (entry.EntryID == entryID)
+                    return true;
+            }
+            return false;
         }
 
         /*
@@ -28,12 +89,13 @@ namespace BusinessManagementLibrary.TimeManagement
          * 
          * The representation is formatted as:
          * Time Cards:
-         * ====================
+         * {'=' repeated 20 times}
          * {Time Card 1}
-         * --------------------
+         * {'-' repeated 20 times}
          * {Time Card 2}
-         * --------------------
+         * {'-' repeated 20 times}
          * ...
+         * {'=' repeated 20 times}
          */
         public override string ToString()
         {
@@ -49,10 +111,41 @@ namespace BusinessManagementLibrary.TimeManagement
                     str += Catalog[i] + "\n";
                     str += "".PadLeft(20, '-') + "\n";
                 }
-                str += Catalog[^1];
+                str += Catalog[^1] + "\n";
             }
 
-            return str;
+            return str + "".PadLeft(20, '=');
+        }
+
+        /*
+         * Returns true if the passed in TimesheetEntryData contains a clock in and/or clock out time that overlaps with a timecard in the catalog
+         * Returns false if there are no timecards in the catalog
+         */
+        private bool TimecardTimesOverlapWithAnotherTimecard(TimecardData entryData)
+        {
+            foreach (Timecard entry in Catalog.Cast<Timecard>())
+            {
+                if (entryData.ContainedTimesOverlapWithTimecard(entry))
+                    return true;
+            }
+            return false;
+        }
+
+        /*
+         * Returns the highest entryID in the list of timesheet entries
+         * Returns -1 if there are no entries in the list
+         */
+        private int GetHighestEntryID()
+        {
+            int maxID = -1;
+
+            foreach (Timecard entry in Catalog.Cast<Timecard>())
+            {
+                if (maxID < entry.EntryID)
+                    maxID = entry.EntryID;
+            }
+
+            return maxID;
         }
     }
 }

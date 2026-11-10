@@ -11,6 +11,7 @@ namespace BusinessManagementLibrary.Data
     {
         Default,
         Break,
-        Task
+        Task,
+        Timecard
     }
 }
