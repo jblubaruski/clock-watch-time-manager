@@ -5,8 +5,6 @@ using System.Text;
 
 namespace BusinessManagementLibrary.TimeManagement
 {
-    // TODO UPDATE CONSTRUCTOR TEST
-
     /*
      * Represents a single entry in a timesheet.
      */

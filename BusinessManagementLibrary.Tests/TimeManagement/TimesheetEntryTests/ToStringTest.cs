@@ -35,6 +35,7 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
         public void ToString_NoNullProperties_CorrectStringRepresentation()
         {
             EntryType   entryType   = EntryType.Break;
+            bool        isBreak     = true;
             int         entryID     = 0;
             DateTime    startTime   = new(2026, 7, 11, 12, 0, 0);
             DateTime    endTime     = new(2026, 7, 11, 12, 30, 0);
@@ -45,9 +46,10 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
                 $"{description}\n" +
                 $"{entryType} end:".PadRight(20) + $"{endTime:MM/dd/yyyy hh:mm:ss tt}";
 
-            TimesheetEntry  entry           = new(entryType, entryID, startTime, endTime, description);
-            string          actualOutput    = entry.ToString();
-            bool            result          = actualOutput == expectedOutput;
+            TimesheetEntryData  data            = new(startTime, endTime, description, isBreak);
+            TimesheetEntry      entry           = new(entryID, data);
+            string              actualOutput    = entry.ToString();
+            bool                result          = actualOutput == expectedOutput;
 
             Assert.True(result);
         }
@@ -55,6 +57,7 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
         public void ToString_NullStartTime_CorrectStringRepresentation()
         {
             EntryType   entryType   = EntryType.Break;
+            bool        isBreak     = true;
             int         entryID     = 0;
             DateTime?   startTime   = null;
             DateTime    endTime     = new(2026, 7, 11, 12, 30, 0);
@@ -65,9 +68,10 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
                 $"{description}\n" +
                 $"{entryType} end:".PadRight(20) + $"{endTime:MM/dd/yyyy hh:mm:ss tt}";
 
-            TimesheetEntry  entry           = new(entryType, entryID, startTime, endTime, description);
-            string          actualOutput    = entry.ToString();
-            bool            result          = actualOutput == expectedOutput;
+            TimesheetEntryData  data            = new(startTime, endTime, description, isBreak);
+            TimesheetEntry      entry           = new(entryID, data);
+            string              actualOutput    = entry.ToString();
+            bool                result          = actualOutput == expectedOutput;
 
             Assert.True(result);
         }
@@ -75,6 +79,7 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
         public void ToString_NullEndTime_CorrectStringRepresentation()
         {
             EntryType   entryType   = EntryType.Break;
+            bool        isBreak     = true;
             int         entryID     = 0;
             DateTime    startTime   = new(2026, 7, 11, 12, 0, 0);
             DateTime?   endTime     = null;
@@ -85,9 +90,10 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
                 $"{description}\n" +
                 $"{entryType} end:".PadRight(20) + "--/--/---- --:--:-- --";
 
-            TimesheetEntry  entry           = new(entryType, entryID, startTime, endTime, description);
-            string          actualOutput    = entry.ToString();
-            bool            result          = actualOutput == expectedOutput;
+            TimesheetEntryData  data            = new(startTime, endTime, description, isBreak);
+            TimesheetEntry      entry           = new(entryID, data);
+            string              actualOutput    = entry.ToString();
+            bool                result          = actualOutput == expectedOutput;
 
             Assert.True(result);
         }
@@ -95,6 +101,7 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
         public void ToString_NullDescription_CorrectStringRepresentation()
         {
             EntryType   entryType   = EntryType.Break;
+            bool        isBreak     = true;
             int         entryID     = 0;
             DateTime    startTime   = new(2026, 7, 11, 12, 0, 0);
             DateTime    endTime     = new(2026, 7, 11, 12, 30, 0);
@@ -105,9 +112,10 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
                  "---\n" +
                 $"{entryType} end:".PadRight(20) + $"{endTime:MM/dd/yyyy hh:mm:ss tt}";
 
-            TimesheetEntry  entry           = new(entryType, entryID, startTime, endTime, description);
-            string          actualOutput    = entry.ToString();
-            bool            result          = actualOutput == expectedOutput;
+            TimesheetEntryData  data            = new(startTime, endTime, description, isBreak);
+            TimesheetEntry      entry           = new(entryID, data);
+            string              actualOutput    = entry.ToString();
+            bool                result          = actualOutput == expectedOutput;
 
             Assert.True(result);
         }

@@ -13,7 +13,7 @@ namespace BusinessManagementLibrary.TimeManagement
     public class TimesheetEntryData : IEntryData
     {
         public DateTime? StartTime { get; }
-        public DateTime? EndTime { get;}
+        public DateTime? EndTime { get; }
         public string? Description { get; }
         public bool IsBreak { get; }
 

@@ -21,21 +21,24 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
         [Fact]
         public void EndTimeSet_ValueGreaterThan_ThrowArgumentException()
         {
-            TimesheetEntry entry = new(EntryType.Break, 0, startTime, null, "Test");
+            TimesheetEntryData data = new(startTime, null, "Test", true);
+            TimesheetEntry entry = new(0, data);
 
             Assert.Throws<ArgumentException>(() => entry.EndTime = endTimeLessThan);
         }
         [Fact]
         public void EndTimeSet_ValueEqualTo_ThrowArgumentException()
         {
-            TimesheetEntry entry = new(EntryType.Break, 0, startTime, null, "Test");
+            TimesheetEntryData data = new(startTime, null, "Test", true);
+            TimesheetEntry entry = new(0, data);
 
             Assert.Throws<ArgumentException>(() => entry.EndTime = endTimeEqualTo);
         }
         [Fact]
         public void EndTimeSet_NullEndTime_SetProperty()
         {
-            TimesheetEntry entry = new(EntryType.Break, 0, null, null, "Test");
+            TimesheetEntryData data = new(null, null, "Test", true);
+            TimesheetEntry entry = new(0, data);
 
             entry.EndTime = endTimeEqualTo;
             bool result = entry.EndTime == endTimeEqualTo;

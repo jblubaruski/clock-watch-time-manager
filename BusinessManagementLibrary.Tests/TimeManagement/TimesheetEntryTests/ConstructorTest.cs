@@ -3,15 +3,15 @@ using BusinessManagementLibrary.TimeManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Xunit.Sdk;
 
 namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
 {
     // TODO UPDATE TO REFLECT CHANGES TO CONSTRUCTOR
 
     /* 
-     * Test for TimesheetEntry.TimesheetEntry(EntryType, int, DateTime?, DateTime?, string?)
+     * Test for TimesheetEntry.TimesheetEntry(int, TimesheetEntryData)
      * 
-     * Assert that passing in a default entry type to entryType throws an ArgumentException
      * Assert that passing in a negative integer to entryID throws an ArgumentException
      * Assert that passing in a start time that is greater than the end time throws an ArgumentException
      * Assert that passing in a start time that is equal to the end time throws an ArgumentException
@@ -24,12 +24,14 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
         public void Ctor_ValidNonNullArguments_ConstructTimesheetEntry()
         {
             EntryType   entryType   = EntryType.Break;
+            bool        isBreak     = true;
             int         entryID     = 0;
             DateTime    startTime   = new(2026, 7, 11, 12, 00, 0);
             DateTime    endTime     = new(2026, 7, 11, 13, 30, 0);
             string      description = "Test";
 
-            TimesheetEntry entry = new(entryType, entryID, startTime, endTime, description);
+            TimesheetEntryData data = new(startTime, endTime, description, isBreak);
+            TimesheetEntry entry = new(entryID, data);
 
             bool result =
                 entry.EntryType     == entryType    &&
@@ -43,13 +45,15 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
         [Fact]
         public void Ctor_ValidNullArguments_ConstructTimesheetEntry()
         {
-            EntryType   entryType   = EntryType.Break;
+            EntryType   entryType   = EntryType.Task;
+            bool        isBreak     = false;
             int         entryID     = 0;
             DateTime?   startTime   = null;
             DateTime?   endTime     = null;
             string?     description = null;
 
-            TimesheetEntry entry = new(entryType, entryID, startTime, endTime, description);
+            TimesheetEntryData  data    = new(startTime, endTime, description, isBreak);
+            TimesheetEntry      entry   = new(entryID, data);
 
             bool result =
                 entry.EntryType     == entryType    &&
@@ -61,18 +65,11 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
             Assert.True(result);
         }
         [Fact]
-        public void Ctor_DefaultEntryType_ThrowArgumentException()
-        {
-            EntryType entryType = EntryType.Default;
-
-            Assert.Throws<ArgumentException>(() => new TimesheetEntry(entryType, 0, null, null, null));
-        }
-        [Fact]
         public void Ctor_NegativeEntryID_ThrowArgumentException()
         {
             int entryID = -1;
 
-            Assert.Throws<ArgumentException>(() => new TimesheetEntry(EntryType.Break, entryID, null, null, null));
+            Assert.Throws<ArgumentException>(() => new TimesheetEntry(entryID, new(null, null, null, true)));
         }
         [Fact]
         public void Ctor_StartTimeGreaterThanEndTime_ThrowArgumentException()
@@ -80,7 +77,7 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
             DateTime startTime  = new(2026, 7, 11, 12, 30, 0);
             DateTime endTime    = new(2026, 7, 11, 12, 0, 0);
 
-            Assert.Throws<ArgumentException>(() => new TimesheetEntry(EntryType.Break, 0, startTime, endTime, null));
+            Assert.Throws<ArgumentException>(() => new TimesheetEntry(0, new(startTime, endTime, null, true)));
         }
         [Fact]
         public void Ctor_StartTimeEqualToEndTime_ThrowArgumentException()
@@ -88,7 +85,7 @@ namespace BusinessManagementLibrary.Tests.TimeManagement.TimesheetEntryTests
             DateTime startTime = new(2026, 7, 11, 12, 0, 0);
             DateTime endTime = new(2026, 7, 11, 12, 0, 0);
 
-            Assert.Throws<ArgumentException>(() => new TimesheetEntry(EntryType.Break, 0, startTime, endTime, null));
+            Assert.Throws<ArgumentException>(() => new TimesheetEntry(0, new (startTime, endTime, null, true)));
         }
     }
 }
