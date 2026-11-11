@@ -6,19 +6,41 @@ using System.Text;
 
 namespace BusinessManagementLibrary.TimeManagement
 {
-    // TODO WRITE TESTS
-
     /*
      * Represents a single work period.
      * Includes a clock in time, clock out time and a list of timesheet entries
      */
-    public class Timecard : IEntryManager, IEntry
+    public class Timecard : IEntryManager<TimesheetEntryData, TimesheetEntry>, IEntry
     {
         public EntryType EntryType { get; }
         public int EntryID { get; }
-        public DateTime? ClockInTime { get; set; }
-        public DateTime? ClockOutTime { get; set; }
-        private List<IEntry> TimesheetEntries { get; } = [];
+
+        private DateTime? _clockInTime;
+        public DateTime? ClockInTime 
+        { 
+            get => _clockInTime;
+            // Throws an ArgumentException if the passed in clock in time is greater than or equal to the current clock out time (this condition is ignored if either time is null)
+            set
+            {
+                if (value != null && _clockOutTime != null && value >= _clockOutTime)
+                    throw new ArgumentException($"New ClockInTime must be less than the current ClockOutTime ({_clockOutTime})");
+                _clockInTime = value;
+            }
+        }
+        private DateTime? _clockOutTime;
+        public DateTime? ClockOutTime 
+        { 
+            get => _clockOutTime;
+            // Throws an ArgumentException if the passed in clock out time is less than or equal to the current clock in time (this condition is ignored if either time is null)
+            set
+            {
+                if (value != null && _clockInTime != null && value <= _clockInTime)
+                    throw new ArgumentException($"New ClockOutTime must be greater than the current ClockInTime ({_clockInTime})");
+                _clockOutTime = value;
+            }
+        }
+
+        protected List<TimesheetEntry> TimesheetEntries { get; } = [];
 
         /*
          * Constructs a new timecard with the passed in data and an empty timesheet entry list
@@ -53,21 +75,16 @@ namespace BusinessManagementLibrary.TimeManagement
          * Throws an ArgumentException if the passed in data container has a non-null start or end time that overlaps with another entry whose start and end time are both not null
          * Throws an exception if either the non-null start time of the container comes before the non-null clock in time or the non-null end time of the container comes afer the clock out time
          */
-        public int AddEntry(IEntryData data)
+        public int AddEntry(TimesheetEntryData data)
         {
-            if (data is not TimesheetEntryData)
-                throw new ArgumentException($"entryData must be of the type {typeof(TimesheetEntryData)} but is {data.GetType()} instead");
-
-            TimesheetEntryData entryData = (TimesheetEntryData)data;
-
-            if (EntryTimesOverlapWithAnotherEntry(entryData))
+            if (EntryTimesOverlapWithAnotherEntry(data))
                 throw new ArgumentException("The non-null start or end time within the passed in container cannot overlap with another entry whose start and end times are both not null");
-            if (ContainerTimesAreOutOfBounds(entryData))
+            if (ContainerTimesAreOutOfBounds(data))
                 throw new ArgumentException("The non-null start time and non-null end time must be within the bounds defined by the non-null clock in and clock out times");
 
             int entryID = GetHighestEntryID() + 1;
 
-            TimesheetEntries.Add(new TimesheetEntry(entryID, entryData));
+            TimesheetEntries.Add(new TimesheetEntry(entryID, data));
 
             return entryID;
         }
@@ -77,9 +94,9 @@ namespace BusinessManagementLibrary.TimeManagement
          * 
          * Returns null if an entry with the passed in value doesn't exist in the timesheet
          */
-        public IEntry? GetEntry(int entryID)
+        public TimesheetEntry? GetEntry(int entryID)
         {
-            foreach (IEntry entry in TimesheetEntries)
+            foreach (TimesheetEntry entry in TimesheetEntries)
             {
                 if (entry.EntryID == entryID)
                     return entry;
@@ -92,10 +109,13 @@ namespace BusinessManagementLibrary.TimeManagement
          */
         public void RemoveEntry(int entryID)
         {
-            foreach (IEntry entry in TimesheetEntries)
+            foreach (TimesheetEntry entry in TimesheetEntries)
             {
                 if (entry.EntryID == entryID)
+                {
                     TimesheetEntries.Remove(entry);
+                    break;
+                }
             }
         }
 
@@ -104,11 +124,31 @@ namespace BusinessManagementLibrary.TimeManagement
          */
         public bool ContainsEntry(int entryID)
         {
-            foreach (IEntry entry in TimesheetEntries)
+            foreach (TimesheetEntry entry in TimesheetEntries)
             {
                 if (entry.EntryID == entryID)
                     return true;
             }
+            return false;
+        }
+
+        /*
+         * Returns the number of entries in the timecard
+         */
+        public int GetEntryCount() => TimesheetEntries.Count;
+
+
+        /*
+         * Returns true if the passed in IEntry is a Timecard with the same entryID
+         */
+        public bool Equals(IEntry? other)
+        {
+            if (other == null)
+                return false;
+            if (other is not Timecard)
+                return false;
+            if (EntryID == other.EntryID)
+                return true;
             return false;
         }
 
@@ -134,7 +174,7 @@ namespace BusinessManagementLibrary.TimeManagement
             else
                 str += "Clock in:".PadRight(20) + "--/--/---- --:--:-- --\n";
 
-            foreach (TimesheetEntry entry in TimesheetEntries.Cast<TimesheetEntry>())
+            foreach (TimesheetEntry entry in TimesheetEntries)
             {
                 str += entry.ToString() + "\n";
             }
@@ -153,7 +193,7 @@ namespace BusinessManagementLibrary.TimeManagement
          */
         private bool EntryTimesOverlapWithAnotherEntry(TimesheetEntryData entryData)
         {
-            foreach (TimesheetEntry entry in TimesheetEntries.Cast<TimesheetEntry>())
+            foreach (TimesheetEntry entry in TimesheetEntries)
             {
                 if (entryData.ContainedTimesOverlapWithEntry(entry))
                     return true;
@@ -169,7 +209,7 @@ namespace BusinessManagementLibrary.TimeManagement
         {
             int maxID = -1;
 
-            foreach (TimesheetEntry entry in TimesheetEntries.Cast<TimesheetEntry>())
+            foreach (TimesheetEntry entry in TimesheetEntries)
             {
                 if (maxID < entry.EntryID)
                     maxID = entry.EntryID;
@@ -187,9 +227,9 @@ namespace BusinessManagementLibrary.TimeManagement
             bool outOfBounds = false;
 
             if (ClockInTime != null && entryData.StartTime != null)
-                outOfBounds &= entryData.StartTime < ClockInTime;
+                outOfBounds |= entryData.StartTime < ClockInTime;
             if (ClockOutTime != null & entryData.EndTime != null)
-                outOfBounds &= entryData.EndTime < ClockOutTime;
+                outOfBounds |= entryData.EndTime > ClockOutTime;
 
             return outOfBounds;
         }

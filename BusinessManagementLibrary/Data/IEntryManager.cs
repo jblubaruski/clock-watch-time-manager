@@ -7,11 +7,12 @@ namespace BusinessManagementLibrary.Data
     /*
      * Defines the required behavior of a class managing a list of entries
      */
-    public interface IEntryManager
+    public interface IEntryManager<T, U>
     {
-        public int AddEntry(IEntryData data);
-        public IEntry? GetEntry(int entryID);
+        public int AddEntry(T data);
+        public U? GetEntry(int entryID);
         public void RemoveEntry(int entryID);
         public bool ContainsEntry(int entryID);
+        public int GetEntryCount();
     }
 }

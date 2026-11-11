@@ -23,7 +23,7 @@ namespace BusinessManagementLibrary.TimeManagement
             set
             {
                 if (value != null && _endTime != null && value >= _endTime)
-                    throw new ArgumentException($"New StartTime must be less than current EndTime ({_endTime})");
+                    throw new ArgumentException($"New StartTime must be less than the current EndTime ({_endTime})");
                 _startTime = value;
             }
         }
@@ -36,7 +36,7 @@ namespace BusinessManagementLibrary.TimeManagement
             set
             {
                 if (value != null && _startTime != null && value <= _startTime)
-                    throw new ArgumentException($"New EndTime must be greater than current StartTime ({_startTime})");
+                    throw new ArgumentException($"New EndTime must be greater than the current StartTime ({_startTime})");
                 _endTime = value;
             }
         }
@@ -60,6 +60,20 @@ namespace BusinessManagementLibrary.TimeManagement
             _startTime  = entryData.StartTime;
             _endTime    = entryData.EndTime;
             Description = entryData.Description;
+        }
+
+        /*
+         * Returns true if the passed in IEntry is a TimesheetEntry with the same entryID
+         */
+        public bool Equals(IEntry? other)
+        {
+            if (other == null)
+                return false;
+            if (other is not TimesheetEntry)
+                return false;
+            if (EntryID == other.EntryID)
+                return true;
+            return false;
         }
 
         /*
