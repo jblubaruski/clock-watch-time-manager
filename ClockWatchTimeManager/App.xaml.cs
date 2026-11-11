@@ -21,7 +21,7 @@ namespace ClockWatchTimeManager
 
             logger.LogEntry
                 (
-                    "Called App()",
+                    "App Start",
                     catalog.ToString()
                 );
         }

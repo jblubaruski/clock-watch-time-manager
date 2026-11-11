@@ -7,8 +7,6 @@ namespace ClockWatchTimeManager
         public AppShell()
         {
             InitializeComponent();
-
-            App.logger.LogEntry("Called AppShell()");
         }
 
         /*

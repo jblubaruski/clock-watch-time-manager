@@ -7,7 +7,5 @@ public partial class ShowTimeCardsPage : ContentPage
 	public ShowTimeCardsPage()
 	{
 		InitializeComponent();
-
-        App.logger.LogEntry("Called ShowTimeCardsPage()");
     }
 }

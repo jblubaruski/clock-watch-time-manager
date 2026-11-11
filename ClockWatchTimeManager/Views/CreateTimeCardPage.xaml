@@ -54,9 +54,9 @@
             <!-- clock in time info -->
             <Label
                 Text="Clock In Time:"
-                HorizontalTextAlignment="End"
+                HorizontalTextAlignment="Start"
                 Style="{StaticResource labelStyle}"
-                Margin="5,5,0,0"
+                Margin="0,5,0,0"
                 Grid.Row="1" Grid.Column="0"/>
             <Label
                 x:Name="clockInDateTimeLabel"
@@ -69,12 +69,12 @@
             <!-- work period duration info -->
             <Label
                 Text="Time Since Clock In:"
-                HorizontalTextAlignment="End"
+                HorizontalTextAlignment="Start"
                 Style="{StaticResource labelStyle}"
                 Margin="0,5,0,0"
                 Grid.Row="2" Grid.Column="0"/>
             <Label
-                Text="{StaticResource defaultTimeDuration}"
+                Text="{Binding TimeSinceClockIn}"
                 Style="{StaticResource labelStyle}"
                 Margin="5,5,0,0"
                 Grid.Row="2" Grid.Column="1"

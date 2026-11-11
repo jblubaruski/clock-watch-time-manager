@@ -7,8 +7,5 @@ public partial class CreateTimeCardPage : ContentPage
     public CreateTimeCardPage()
     {
         InitializeComponent();
-
-        App.logger.LogEntry("Called CreateTimeCardPage()");
     }
 }
-
