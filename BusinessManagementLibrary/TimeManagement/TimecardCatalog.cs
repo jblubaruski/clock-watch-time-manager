@@ -7,15 +7,13 @@ using System.Text;
 
 namespace BusinessManagementLibrary.TimeManagement
 {
-    // TODO WRITE TESTS
-    
     /*
      * Contains and manages a collection of timecards
      */
     public class TimecardCatalog : IEntryManager<TimecardData, Timecard>
     {
         
-        private List<Timecard> Catalog { get; } = [];
+        protected List<Timecard> Catalog { get; } = [];
 
         /*
          * Creates a new timecard from the passed in timecard data, adds it to the catalog, and returns the timecard's ID
@@ -62,7 +60,10 @@ namespace BusinessManagementLibrary.TimeManagement
             foreach (Timecard entry in Catalog)
             {
                 if (entry.EntryID == entryID)
+                {
                     Catalog.Remove(entry);
+                    break;
+                }
             }
         }
 

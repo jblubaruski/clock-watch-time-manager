@@ -7,7 +7,7 @@ using System.Text;
 namespace BusinessManagementLibrary.Tests.TimeManagement.TimecardTests
 {
     /*
-     * Tests for Timecard.AddEntry(IEntryData)
+     * Tests for Timecard.AddEntry(TimesheetEntryData)
      * 
      * Assert that passing in a container with times that overlap with another entries non-null start and end times throws an ArgumentException
      * Assert that passing in a container with a non-null start time that comes before the non-null clock in time throws an ArgumentException
