@@ -1,4 +1,5 @@
 ﻿using BusinessManagementLibrary.TimeManagement;
+using ClockWatchTimeManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -26,8 +27,6 @@ partial class CreateTimeCardViewModel : ObservableObject
     public const string ZERO_TIME_DURATION = "00:00:00";
     // format for displaying the time and date
     public const string DEFAULT_DATETIME_FORMAT = "{0:h:mm:ss tt -- dddd MMM dd, yyyy}";
-    // the amount of time between clock ticks
-    public static readonly TimeSpan TimeclockTickInterval = new(0, 0, 1);
 
     /*
      * BINDABLE PROPERTIES
@@ -79,17 +78,15 @@ partial class CreateTimeCardViewModel : ObservableObject
 
     // the ID of the current timecard (is -1 if theres no current timecard)
     private int CurrentTimecardID { get; set; } = -1;
-    // the dispatcher used by the program to act as a clock
-    private IDispatcher? Dispatcher { get; set; } = null;
-    // whether or not the clock should be ticking
-    internal bool ShouldClockTick { get; set; } = false;
+    // the timeclock used to update the clock in duration display
+    private Timeclock? Timeclock { get; set; } = null;
 
     /*
      * CONSTRUCTORS
      */
     public CreateTimeCardViewModel()
     {
-        SetupDispatcher();
+        SetupTimeclock();
     }
 
     /*
@@ -116,8 +113,20 @@ partial class CreateTimeCardViewModel : ObservableObject
         App.logger.LogEntry($"Clocked in at {clockInTime}");
 
         ClockInDateTime = string.Format(DEFAULT_DATETIME_FORMAT, clockInTime);
-        
-        StartTimeClock();
+        TimeSinceClockIn = ZERO_TIME_DURATION;
+
+        if (Timeclock != null)
+        {
+            Timeclock.StartTimeClock(clockInTime);
+        }
+        else
+        {
+            App.logger.LogEntry
+                (
+                    $"In {nameof(ClockIn)}:\n",
+                    "Timeclock does not exist in the view model and could not be started"
+                );
+        }
     }
     bool ClockInCanExecute()
     {
@@ -160,8 +169,21 @@ partial class CreateTimeCardViewModel : ObservableObject
         }
 
         ClockInDateTime = DEFAULT_DATETIME;
+        TimeSinceClockIn = DEFAULT_TIME_DURATION;
 
-        StopTimeClock();
+        if (Timeclock != null)
+        {
+            Timeclock.StopTimeClock();
+        }
+        else
+        {
+            App.logger.LogEntry
+                (
+                    $"In {nameof(ClockOut)}:\n",
+                    "Timeclock does not exist in the view model and could not be stopped"
+                );
+        }
+
     }
     bool ClockOutCanExecute()
     {
@@ -193,70 +215,27 @@ partial class CreateTimeCardViewModel : ObservableObject
     /*
      * Sets up the dispatcher used to dispatch events to the UI thread
      */
-    public void SetupDispatcher()
+    public void SetupTimeclock()
     {
         DispatcherProvider dispatcherProvider = new();
-        Dispatcher = dispatcherProvider.GetForCurrentThread();
-    }
+        IDispatcher? dispatcher = dispatcherProvider.GetForCurrentThread();
 
-    /*
-     * Starts the time clock
-     */
-    public void StartTimeClock()
-    {
-        if (Dispatcher != null)
+        if (dispatcher != null)
         {
-            ShouldClockTick = true;
-            TimeSinceClockIn = ZERO_TIME_DURATION;
-            Dispatcher.StartTimer(TimeclockTickInterval, TickTimeClock);
+            TimeSpan timeclockTickInterval = new(0, 0, 1);
+            Timeclock = new(timeclockTickInterval, dispatcher);
         }
         else
         {
-            App.logger.LogEntry("The dispatcher for the page is null and the timeclock could not be started");
+            App.logger.LogEntry
+                (
+                    $"In {nameof(SetupTimeclock)}:\n",
+                    "The DispatchProvider could not get an instance of IDispatcher for the current thread"
+                );
         }
     }
 
     /*
-     * Stops the time clock
+     * Updates the view clock in duration display with the passed in time
      */
-    public void StopTimeClock()
-    {
-        TimeSinceClockIn = DEFAULT_TIME_DURATION;
-        ShouldClockTick = false;
-    }
-
-    /*
-     * Calculates the timespan between the current time and the current time card's clock in time.
-     * Updates the time since clock in display to show how much time has passed since the user clocked in.
-     * Returns false when the dispatcher should stop calling this method.
-     * Only runs internal logic when ShouldClockTick is true
-     */
-    public bool TickTimeClock()
-    {
-        if (ShouldClockTick)
-        {
-            Timecard? currentTimecard = App.catalog.GetEntry(CurrentTimecardID);
-
-            if (currentTimecard != null)
-            {
-                DateTime currentTime = DateTime.Now;
-                DateTime? clockInTime = currentTimecard.ClockInTime;
-
-                if (clockInTime != null)
-                {
-                    TimeSpan timeSinceClockIn = currentTime.Subtract((DateTime)clockInTime);
-                    TimeSinceClockIn = timeSinceClockIn.ToString(@"hh\:mm\:ss");
-                }
-            }
-            // if the current timecard doesnt exist in the catalog
-            else
-            {
-                App.logger.LogEntry($"the timecard with the ID {CurrentTimecardID} does not exist in the catalog and the timeclock has stopped");
-                ResetPage();
-                ShouldClockTick = false;
-            }
-        }
-
-        return ShouldClockTick;
-    }
 }

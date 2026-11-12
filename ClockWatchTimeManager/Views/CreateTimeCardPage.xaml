@@ -89,8 +89,9 @@
 
         <!-- timesheet layout -->
         <Grid
+            x:Name="timesheet"
             RowDefinitions="Auto,Auto,*"
-            ColumnDefinitions="Auto,Auto,Auto"
+            ColumnDefinitions="460,Auto,460"
             Padding="5,10,5,0">
 
             <!-- break controls -->
@@ -116,6 +117,7 @@
 
             <!-- break display -->
             <ScrollView
+                x:Name="breakDisplay"
                 Grid.Row="1" Grid.Column="0"
                 Margin="0,10,0,0">
 
