@@ -79,14 +79,33 @@ partial class CreateTimeCardViewModel : ObservableObject
     // the ID of the current timecard (is -1 if theres no current timecard)
     private int CurrentTimecardID { get; set; } = -1;
     // the timeclock used to update the clock in duration display
-    private Timeclock? Timeclock { get; set; } = null;
+    private Timeclock? Timeclock { get; } = null;
+    // the reciever that gets notifications from the timeclock whenever it ticks
+    private NotificationReciever<TimeclockDisplayInfo>? TimeclockMonitor { get; } = null;
 
     /*
      * CONSTRUCTORS
      */
     public CreateTimeCardViewModel()
     {
-        SetupTimeclock();
+        // set up the timeclock
+        DispatcherProvider dispatcherProvider = new();
+        IDispatcher? dispatcher = dispatcherProvider.GetForCurrentThread();
+
+        if (dispatcher != null)
+        {
+            TimeSpan timeclockTickInterval = new(0, 0, 1);
+            Timeclock = new(timeclockTickInterval, dispatcher);
+            TimeclockMonitor = new(UpdateDurationDisplay, TimeclockClosed, LogError);
+        }
+        else
+        {
+            App.logger.LogEntry
+                (
+                    $"In {nameof(CreateTimeCardViewModel)}:\n",
+                    "The DispatchProvider could not get an instance of IDispatcher for the current thread"
+                );
+        }
     }
 
     /*
@@ -115,8 +134,9 @@ partial class CreateTimeCardViewModel : ObservableObject
         ClockInDateTime = string.Format(DEFAULT_DATETIME_FORMAT, clockInTime);
         TimeSinceClockIn = ZERO_TIME_DURATION;
 
-        if (Timeclock != null)
+        if (TimeclockMonitor != null && Timeclock != null)
         {
+            TimeclockMonitor.Subscribe(Timeclock.monitor);
             Timeclock.StartTimeClock(clockInTime);
         }
         else
@@ -124,7 +144,7 @@ partial class CreateTimeCardViewModel : ObservableObject
             App.logger.LogEntry
                 (
                     $"In {nameof(ClockIn)}:\n",
-                    "Timeclock does not exist in the view model and could not be started"
+                    "Timeclock or its monitor does not exist in the view model and the timeclock could not be started"
                 );
         }
     }
@@ -195,6 +215,11 @@ partial class CreateTimeCardViewModel : ObservableObject
      */
 
     /*
+     * Returns true if a current timecard is assigned to the page
+     */
+    public bool IsTimecardAssignesAsCurrent() => CurrentTimecardID > -1;
+
+    /*
      * Resets the page to its base state
      */
     private void ResetPage()
@@ -208,34 +233,21 @@ partial class CreateTimeCardViewModel : ObservableObject
     }
 
     /*
-     * Returns true if a current timecard is assigned to the page
+     * Updates the view clock in duration display with the passed in time
      */
-    public bool IsTimecardAssignesAsCurrent() => CurrentTimecardID > -1;
-
-    /*
-     * Sets up the dispatcher used to dispatch events to the UI thread
-     */
-    public void SetupTimeclock()
+    private void UpdateDurationDisplay(TimeclockDisplayInfo data)
     {
-        DispatcherProvider dispatcherProvider = new();
-        IDispatcher? dispatcher = dispatcherProvider.GetForCurrentThread();
-
-        if (dispatcher != null)
-        {
-            TimeSpan timeclockTickInterval = new(0, 0, 1);
-            Timeclock = new(timeclockTickInterval, dispatcher);
-        }
-        else
-        {
-            App.logger.LogEntry
-                (
-                    $"In {nameof(SetupTimeclock)}:\n",
-                    "The DispatchProvider could not get an instance of IDispatcher for the current thread"
-                );
-        }
+        TimeSinceClockIn = data.TimeDuration.ToString(@"hh\:mm\:ss");
     }
 
     /*
-     * Updates the view clock in duration display with the passed in time
+     * Logs the recieved error in the application log
      */
+    private void LogError(Exception ex)
+    {
+        App.logger.LogEntry(ex.Message);
+    }
+
+    // stub for onCompleted
+    private void TimeclockClosed() { }
 }

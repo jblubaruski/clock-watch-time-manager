@@ -7,7 +7,7 @@ namespace ClockWatchTimeManager.Models
     /*
      * A clock that sends a push notification to observers with the amount of time that has passed since it was started on a regular interval
      */
-    internal class Timeclock : IObservable<TimeclockDisplayInfo>, IDisposable
+    public class Timeclock
     {
         // the time this timeclock was activated
         private DateTime? ClockStartTime { get; set; } = null;
@@ -17,7 +17,7 @@ namespace ClockWatchTimeManager.Models
         private IDispatcher Dispatcher { get; set; }
         // the amount of time between clock ticks
         private TimeSpan _timeclockTickInterval;
-        public TimeSpan TimeclockTickInterval 
+        public TimeSpan TimeclockTickInterval
         { 
             get => _timeclockTickInterval;
             // Throws an InvalidOperationException if TimeclockTickInterval is set whole ClockTicking is true
@@ -28,6 +28,8 @@ namespace ClockWatchTimeManager.Models
                 _timeclockTickInterval = value;
             }
         }
+        // observable that allows the timeclock to send notifications to observers
+        public NotificationProvider<TimeclockDisplayInfo> monitor = new();
 
         /*
          * Constructs the timeclock from the passed in TimeSpan and IDispatcher
@@ -45,7 +47,7 @@ namespace ClockWatchTimeManager.Models
         {
             ClockTicking = true;
             ClockStartTime = clockStartTime;
-            Dispatcher.StartTimer(TimeclockTickInterval, TickTimeClock);
+            Dispatcher.StartTimer(TimeclockTickInterval, Tick);
         }
 
         /*
@@ -55,6 +57,7 @@ namespace ClockWatchTimeManager.Models
         {
             ClockTicking = false;
             ClockStartTime = null;
+            monitor.CompleteAll();
         }
 
         /*
@@ -63,20 +66,20 @@ namespace ClockWatchTimeManager.Models
          * 
          * Throws an InvalidOperationException when this method is called while ClockStartTime is null
          */
-        public bool TickTimeClock()
+        public bool Tick()
         {
             if (ClockTicking)
             {
                 if (ClockStartTime != null)
                 {
                     DateTime currentTime = DateTime.Now;
-                    TimeSpan timeSinceClockIn = currentTime.Subtract((DateTime)ClockStartTime);
-                    TimeSinceClockIn = timeSinceClockIn.ToString(@"hh\:mm\:ss");
+                    TimeclockDisplayInfo timeSinceClockIn = new(currentTime.Subtract((DateTime)ClockStartTime));
+                    monitor.NotifyAll(timeSinceClockIn);
                 }
                 else
                 {
+                    monitor.RaiseAll(new InvalidOperationException($"The timeclock could not process {nameof(Tick)} because the ClockStartTime is null"));
                     StopTimeClock();
-                    throw new InvalidOperationException($"The timeclock could not process {nameof(TickTimeClock)} because the ClockStartTime is null");
                 }
             }
 
