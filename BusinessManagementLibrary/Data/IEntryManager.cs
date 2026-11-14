@@ -9,7 +9,7 @@ namespace BusinessManagementLibrary.Data
      */
     public interface IEntryManager<T, U>
         where T : IEntryData
-        where U : IEntry
+        where U : IEntry<T>
     {
         public int AddEntry(T data);
         public U? GetEntry(int entryID);

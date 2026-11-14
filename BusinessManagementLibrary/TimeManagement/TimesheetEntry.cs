@@ -8,7 +8,7 @@ namespace BusinessManagementLibrary.TimeManagement
     /*
      * Represents a single entry in a timesheet.
      */
-    public class TimesheetEntry : IEntry
+    public class TimesheetEntry : IEntry<TimesheetEntryData>, IEquatable<TimesheetEntry>
     {
         public EntryType EntryType { get; }
         public int EntryID { get; }
@@ -65,16 +65,19 @@ namespace BusinessManagementLibrary.TimeManagement
         /*
          * Returns true if the passed in IEntry is a TimesheetEntry with the same entryID
          */
-        public bool Equals(IEntry? other)
+        public bool Equals(TimesheetEntry? other)
         {
             if (other == null)
-                return false;
-            if (other is not TimesheetEntry)
                 return false;
             if (EntryID == other.EntryID)
                 return true;
             return false;
         }
+
+        /*
+         * Returns a data container encapsulating this entries data
+         */
+        public TimesheetEntryData ToDataContainer() => new(StartTime, EndTime, Description, EntryType == EntryType.Break);
 
         /*
          * Returns a string representation of this timesheet entry

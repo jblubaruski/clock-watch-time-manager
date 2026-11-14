@@ -10,7 +10,7 @@ namespace BusinessManagementLibrary.TimeManagement
      * Represents a single work period.
      * Includes a clock in time, clock out time and a list of timesheet entries
      */
-    public class Timecard : IEntryManager<TimesheetEntryData, TimesheetEntry>, IEntry
+    public class Timecard : IEntryManager<TimesheetEntryData, TimesheetEntry>, IEntry<TimecardData>, IEquatable<Timecard>
     {
         public EntryType EntryType { get; }
         public int EntryID { get; }
@@ -105,6 +105,25 @@ namespace BusinessManagementLibrary.TimeManagement
         }
 
         /*
+         * Retrieves all the entries that are either a break or a task in the timecard as data containers and returns them as a list
+         * 
+         * breaks determines whether breaks or tasks are returned (true returns breaks, false returns tasks)
+         */
+        public List<IEntry<TimesheetEntryData>> GetEitherBreaksOrTasks(bool breaks)
+        {
+            List<IEntry<TimesheetEntryData>> entries = [];
+            EntryType typeFilter = breaks ? EntryType.Break : EntryType.Task;
+
+            foreach (IEntry<TimesheetEntryData> entry in TimesheetEntries)
+            {
+                if (entry.EntryType == typeFilter)
+                    entries.Add(entry);
+            }
+
+            return entries;
+        }
+
+        /*
          * Removes the entry corresponding to the passed in entry ID
          */
         public void RemoveEntry(int entryID)
@@ -141,16 +160,19 @@ namespace BusinessManagementLibrary.TimeManagement
         /*
          * Returns true if the passed in IEntry is a Timecard with the same entryID
          */
-        public bool Equals(IEntry? other)
+        public bool Equals(Timecard? other)
         {
             if (other == null)
-                return false;
-            if (other is not Timecard)
                 return false;
             if (EntryID == other.EntryID)
                 return true;
             return false;
         }
+
+        /*
+         * Returns a data container encapsulating this timecard's data
+         */
+        public TimecardData ToDataContainer() => new(ClockInTime, ClockOutTime);
 
         /*
          * Returns a string representation of this time card in the format:
