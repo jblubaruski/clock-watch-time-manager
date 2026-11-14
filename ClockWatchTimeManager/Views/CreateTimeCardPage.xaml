@@ -8,7 +8,8 @@
         <viewmodel:CreateTimeCardViewModel/>
     </ContentPage.BindingContext>
 
-    <VerticalStackLayout>
+    <Grid
+        RowDefinitions="Auto, Auto, Auto, Auto, *">
         <!-- time card - top bar separator -->
         <BoxView
             Style="{StaticResource horizontalSeparatorStyle}"
@@ -22,6 +23,7 @@
 
         <!-- time card header layout -->
         <Grid
+            Grid.Row="2"
             RowDefinitions="30,Auto,Auto"
             ColumnDefinitions="150,150,150"
             Padding="5,10,5,5">
@@ -84,13 +86,14 @@
         <!-- header - timesheet separator -->
         <BoxView
             Style="{StaticResource horizontalSeparatorStyle}"
-            Grid.Row="1" Grid.Column="0"
+            Grid.Row="3" Grid.Column="0"
             Grid.ColumnSpan="3"/>
 
         <!-- timesheet layout -->
         <Grid
             x:Name="timesheet"
-            RowDefinitions="Auto,Auto,*"
+            Grid.Row="4"
+            RowDefinitions="Auto,*"
             ColumnDefinitions="460,Auto,460"
             Padding="5,10,5,0">
 
@@ -101,89 +104,34 @@
                 <Button
                     Text="Start Break"
                     WidthRequest="135"
-                    Style="{StaticResource buttonStyle}"/>
+                    Style="{StaticResource buttonStyle}"
+                    IsEnabled="{Binding StartBreakEnabled}"
+                    Command="{Binding StartBreakCommand}"/>
                 <Button
                     Text="End Break"
                     WidthRequest="135"
                     Margin="5,0,0,0"
-                    Style="{StaticResource buttonStyle}"/>
+                    Style="{StaticResource buttonStyle}"
+                    IsEnabled="{Binding EndBreakEnabled}"
+                    Command="{Binding EndBreakCommand}"/>
                 <Label
                     Text="Break Saved!"
                     Margin="5,0,0,0"
                     VerticalOptions="Center"
-                    IsVisible="True"
+                    IsVisible="{Binding BreakSavedNotifVisible}"
                     Style="{StaticResource labelStyle}"/>
             </HorizontalStackLayout>
 
             <!-- break display -->
             <ScrollView
-                x:Name="breakDisplay"
                 Grid.Row="1" Grid.Column="0"
                 Margin="0,10,0,0">
-
-                <!-- example break info -->
-                <Grid
-                    RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                    ColumnDefinitions="80,100,280">
+                <VerticalStackLayout
+                    x:Name="breakDisplay">
                     
-                    <!-- top border -->
-                    <BoxView
-                        Style="{StaticResource horizontalSeparatorStyle}"
-                        Grid.Row="0" Grid.Column="0"
-                        Grid.ColumnSpan="3"/>
+                    <!-- breaks are added programatically -->
 
-                    <!-- start time -->
-                    <Label
-                        Text="Start Time:"
-                        Style="{StaticResource labelStyle}"
-                        HorizontalOptions="End"
-                        Margin="0,5,0,0"
-                        Grid.Row="1" Grid.Column="0"/>
-                    <Label
-                        Text="{StaticResource defaultDateTime}"
-                        Style="{StaticResource labelStyle}"
-                        Margin="5,5,0,0"
-                        Grid.Row="1" Grid.Column="1"
-                        Grid.ColumnSpan="2"/>
-
-                    <!-- end time -->
-                    <Label
-                        Text="End Time:"
-                        Style="{StaticResource labelStyle}"
-                        HorizontalOptions="End"
-                        Margin="0,5,0,0"
-                        Grid.Row="2" Grid.Column="0"/>
-                    <Label
-                        Text="{StaticResource defaultDateTime}"
-                        Style="{StaticResource labelStyle}"
-                        Margin="5,5,0,0"
-                        Grid.Row="2" Grid.Column="1"
-                        Grid.ColumnSpan="2"/>
-
-                    <!-- description -->
-                    <Border
-                        Style="{StaticResource descriptionBorderStyle}"
-                        WidthRequest="415"
-                        Grid.Row="3" Grid.Column="0"
-                        Grid.ColumnSpan="3">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="4,4,4,4"/>
-                        </Border.StrokeShape>
-                        <Label
-                            Text="{StaticResource defaultBreakDescription}"
-                            Style="{StaticResource descriptionLabelStyle}"
-                            VerticalTextAlignment="Center"
-                            WidthRequest="410"/>
-                    </Border>
-                    <Button
-                        Text="Edit Break Description"
-                        Style="{StaticResource buttonStyle}"
-                        WidthRequest="275"
-                        HorizontalOptions="Start"
-                        Margin="0,5,0,0"
-                        Grid.Row="4" Grid.Column="0"
-                        Grid.ColumnSpan="3"/>
-                </Grid>
+                </VerticalStackLayout>
             </ScrollView>
 
             <!-- breaks - tasks separator -->
@@ -195,7 +143,7 @@
             <BoxView
                 Style="{StaticResource verticalSeparatorStyle}"
                 Margin="5,0"
-                HeightRequest="400"
+                HeightRequest="370"
                 Grid.Row="2" Grid.Column="1"/>
 
             <!-- task controls -->
@@ -285,5 +233,5 @@
                 </Grid>
             </ScrollView>
         </Grid>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

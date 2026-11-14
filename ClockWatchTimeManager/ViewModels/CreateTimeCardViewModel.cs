@@ -27,6 +27,8 @@ partial class CreateTimeCardViewModel : ObservableObject
     public const string ZERO_TIME_DURATION = "00:00:00";
     // format for displaying the time and date
     public const string DEFAULT_DATETIME_FORMAT = "{0:h:mm:ss tt -- dddd MMM dd, yyyy}";
+    // default break description shown when no description is present
+    public const string DEFAULT_BREAK_DESCRIPTION = "Break description...";
 
     /*
      * BINDABLE PROPERTIES
@@ -72,6 +74,46 @@ partial class CreateTimeCardViewModel : ObservableObject
         set => SetProperty(ref _timeSinceClockIn, value);
     }
 
+    // whether or not the start break button is enabled
+    private bool _startBreakEnabled = false;
+    public bool StartBreakEnabled
+    {
+        get => _startBreakEnabled;
+        set => SetProperty(ref _startBreakEnabled, value);
+    }
+
+    // whether or not the end break button is enabled
+    private bool _endBreakEnabled = false;
+    public bool EndBreakEnabled
+    {
+        get => _endBreakEnabled;
+        set => SetProperty(ref _endBreakEnabled, value);
+    }
+
+    // whether or not the break saved notification is visible
+    private bool _breakSavedNotifVisible = false;
+    public bool BreakSavedNotifVisible
+    {
+        get => _breakSavedNotifVisible;
+        set => SetProperty(ref _breakSavedNotifVisible, value);
+    }
+
+    // the start time of the current break
+    private string _currentBreakStartTime = DEFAULT_DATETIME;
+    public string CurrentBreakStartTime
+    {
+        get => _currentBreakStartTime;
+        set => SetProperty(ref _currentBreakStartTime, value);
+    }
+
+    // the end time of the current break
+    private string _currentBreakEndTime = DEFAULT_DATETIME;
+    public string CurrentBreakEndTime
+    {
+        get => _currentBreakEndTime;
+        set => SetProperty(ref _currentBreakEndTime, value);
+    }
+
     /*
      * PROPERTIES
      */
@@ -81,10 +123,17 @@ partial class CreateTimeCardViewModel : ObservableObject
     // the timeclock used to update the clock in duration display
     private Timeclock? Timeclock { get; } = null;
     // the reciever that gets notifications from the timeclock whenever it ticks
-    private NotificationReciever<TimeclockDisplayInfo>? TimeclockMonitor { get; } = null;
+    private NotificationReciever<TimeclockDisplayInfo>? TickReciever { get; } = null;
 
     /*
-     * CONSTRUCTORS
+     * EVENTS
+     */
+
+    internal event Action? AddBreakEntryBoxRequested;
+    internal event Action? ClearBreakDisplayRequested;
+
+    /*
+     * CONSTRUCTOR
      */
     public CreateTimeCardViewModel()
     {
@@ -96,7 +145,7 @@ partial class CreateTimeCardViewModel : ObservableObject
         {
             TimeSpan timeclockTickInterval = new(0, 0, 1);
             Timeclock = new(timeclockTickInterval, dispatcher);
-            TimeclockMonitor = new(UpdateDurationDisplay, TimeclockClosed, LogError);
+            TickReciever = new(UpdateDurationDisplay, TimeclockClosed, LogError);
         }
         else
         {
@@ -125,6 +174,8 @@ partial class CreateTimeCardViewModel : ObservableObject
         ClockOutEnabled = true;
         TimeCardSavedNotifVisible = false;
 
+        StartBreakEnabled = true;
+
         DateTime clockInTime = DateTime.Now;
         TimecardData newCardData = new(clockInTime, null);
         CurrentTimecardID = App.catalog.AddEntry(newCardData);
@@ -134,9 +185,9 @@ partial class CreateTimeCardViewModel : ObservableObject
         ClockInDateTime = string.Format(DEFAULT_DATETIME_FORMAT, clockInTime);
         TimeSinceClockIn = ZERO_TIME_DURATION;
 
-        if (TimeclockMonitor != null && Timeclock != null)
+        if (TickReciever != null && Timeclock != null)
         {
-            TimeclockMonitor.Subscribe(Timeclock.monitor);
+            TickReciever.Subscribe(Timeclock.monitor);
             Timeclock.StartTimeClock(clockInTime);
         }
         else
@@ -168,6 +219,13 @@ partial class CreateTimeCardViewModel : ObservableObject
         ClockOutEnabled = false;
         TimeCardSavedNotifVisible = true;
 
+        StartBreakEnabled = false;
+        EndBreakEnabled = false;
+        BreakSavedNotifVisible = false;
+
+        CurrentBreakStartTime = DEFAULT_DATETIME;
+        CurrentBreakEndTime = DEFAULT_DATETIME;
+
         Timecard? currentTimecard = App.catalog.GetEntry(CurrentTimecardID);
 
         if (currentTimecard != null)
@@ -189,7 +247,6 @@ partial class CreateTimeCardViewModel : ObservableObject
         }
 
         ClockInDateTime = DEFAULT_DATETIME;
-        TimeSinceClockIn = DEFAULT_TIME_DURATION;
 
         if (Timeclock != null)
         {
@@ -204,10 +261,44 @@ partial class CreateTimeCardViewModel : ObservableObject
                 );
         }
 
+        ClearBreakDisplayRequested?.Invoke();
+
     }
     bool ClockOutCanExecute()
     {
         return ClockOutEnabled;
+    }
+
+    /*
+     * The command that runs when the user clicks the start break button
+     */
+    [RelayCommand(CanExecute = nameof(StartBreakCanExecute))]
+    void StartBreak()
+    {
+        StartBreakEnabled = false;
+        EndBreakEnabled = true;
+        BreakSavedNotifVisible = false;
+
+        AddBreakEntryBoxRequested?.Invoke();
+    }
+    bool StartBreakCanExecute()
+    {
+        return StartBreakEnabled;
+    }
+
+    /*
+     * The command that runs when the user clicks the end break button
+     */
+    [RelayCommand(CanExecute = nameof(EndBreakCanExecute))]
+    void EndBreak()
+    {
+        StartBreakEnabled = true;
+        EndBreakEnabled = false;
+        BreakSavedNotifVisible = true;
+    }
+    bool EndBreakCanExecute()
+    {
+        return EndBreakEnabled;
     }
 
     /*
@@ -230,10 +321,17 @@ partial class CreateTimeCardViewModel : ObservableObject
 
         ClockInDateTime = DEFAULT_DATETIME;
         TimeSinceClockIn = DEFAULT_TIME_DURATION;
+
+        StartBreakEnabled = false;
+        EndBreakEnabled = false;
+        BreakSavedNotifVisible = false;
+
+        CurrentBreakStartTime = DEFAULT_DATETIME;
+        CurrentBreakEndTime = DEFAULT_DATETIME;
     }
 
     /*
-     * Updates the view clock in duration display with the passed in time
+     * Updates the text in the duration display with the passed in time
      */
     private void UpdateDurationDisplay(TimeclockDisplayInfo data)
     {
@@ -248,6 +346,11 @@ partial class CreateTimeCardViewModel : ObservableObject
         App.logger.LogEntry(ex.Message);
     }
 
-    // stub for onCompleted
-    private void TimeclockClosed() { }
+    /* 
+     * Resets the duration display to the default string
+     */
+    private void TimeclockClosed()
+    {
+        TimeSinceClockIn = DEFAULT_TIME_DURATION;
+    }
 }

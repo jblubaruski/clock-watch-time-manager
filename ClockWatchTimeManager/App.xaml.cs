@@ -19,11 +19,7 @@ namespace ClockWatchTimeManager
         {
             InitializeComponent();
 
-            logger.LogEntry
-                (
-                    "App Start",
-                    catalog.ToString()
-                );
+            logger.LogEntry("App Start");
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
