@@ -24,6 +24,7 @@ public partial class CreateTimeCardPage : ContentPage
         base.OnAppearing();
 
         ((CreateTimeCardViewModel)BindingContext).AddBreakEntryBoxRequested += AddBreakEntryBox;
+        ((CreateTimeCardViewModel)BindingContext).AddBreakDisplayBoxRequested += AddBreakDisplayBox;
         ((CreateTimeCardViewModel)BindingContext).ClearBreakDisplayRequested += ClearBreakDisplay;
     }
 
@@ -32,6 +33,7 @@ public partial class CreateTimeCardPage : ContentPage
         base.OnDisappearing();
 
         ((CreateTimeCardViewModel)BindingContext).AddBreakEntryBoxRequested -= AddBreakEntryBox;
+        ((CreateTimeCardViewModel)BindingContext).AddBreakDisplayBoxRequested -= AddBreakDisplayBox;
         ((CreateTimeCardViewModel)BindingContext).ClearBreakDisplayRequested -= ClearBreakDisplay;
     }
 
@@ -81,6 +83,98 @@ public partial class CreateTimeCardPage : ContentPage
             );
     }
 
+    // adds a display box to breakDisplay
+    private void AddBreakDisplayBox(string breakStartTime, string breakEndTime)
+    {
+        // break entry container
+
+        Grid entryContainer = new()
+        {
+            RowDefinitions =
+            {
+                new RowDefinition(),
+                new RowDefinition(),
+                new RowDefinition(),
+                new RowDefinition(),
+                new RowDefinition()
+            },
+            ColumnDefinitions =
+            {
+                new ColumnDefinition(new GridLength(80)),
+                new ColumnDefinition(new GridLength(100)),
+                new ColumnDefinition(new GridLength(280))
+            }
+        };
+
+        // top border
+
+        BoxView topBorder = new()
+        {
+            Style = HorizontalSeparatorStyle
+        };
+        entryContainer.AddWithSpan(topBorder, 0, 0, 1, 3);
+
+        // start time
+
+        Label startTimeLabel = new()
+        {
+            Text = "Start Time:",
+            Style = LabelStyle,
+            HorizontalOptions = LayoutOptions.End,
+            Margin = new(0, 5, 0, 0)
+        };
+        entryContainer.AddWithSpan(startTimeLabel, 1, 0);
+
+        Label startTimeValue = new()
+        {
+            Text = breakStartTime,
+            Style = LabelStyle,
+            Margin = new(5, 5, 0, 0)
+        };
+        entryContainer.AddWithSpan(startTimeValue, 1, 1, 1, 2);
+
+        // end time
+
+        Label endTimeLabel = new()
+        {
+            Text = "End Time:",
+            Style = LabelStyle,
+            HorizontalOptions = LayoutOptions.End,
+            Margin = new(0, 5, 0, 0)
+        };
+        entryContainer.AddWithSpan(endTimeLabel, 2, 0);
+
+        Label endTimeValue = new()
+        {
+            Text = breakEndTime,
+            Style = LabelStyle,
+            Margin = new(5, 5, 0, 0)
+        };
+        entryContainer.AddWithSpan(endTimeValue, 2, 1, 1, 2);
+
+        // break description
+
+        Border descriptionBorder = new()
+        {
+            Style = DescriptionBorderStyle,
+            WidthRequest = 415,
+            StrokeShape = new RoundRectangle()
+            {
+                CornerRadius = new(4)
+            }
+        };
+        entryContainer.AddWithSpan(descriptionBorder, 3, 0, 1, 3);
+
+        Label descriptionValue = new()
+        {
+            Text = CreateTimeCardViewModel.DEFAULT_BREAK_DESCRIPTION,
+            Style = DescriptionLabelStyle,
+            VerticalTextAlignment = TextAlignment.Center,
+            WidthRequest = 410
+        };
+        descriptionBorder.Content = descriptionValue;
+    }
+
     // adds an entry box to breakDisplay
     private void AddBreakEntryBox()
     {
@@ -125,10 +219,10 @@ public partial class CreateTimeCardPage : ContentPage
 
         Label startTimeValue = new()
         {
-            Text = CreateTimeCardViewModel.DEFAULT_DATETIME,
             Style = LabelStyle,
             Margin = new(5, 5, 0, 0)
         };
+        startTimeValue.SetBinding(Label.TextProperty, "CurrentBreakStartTime");
         entryContainer.AddWithSpan(startTimeValue, 1, 1, 1, 2);
 
         // end time
@@ -148,6 +242,7 @@ public partial class CreateTimeCardPage : ContentPage
             Style = LabelStyle,
             Margin = new(5, 5, 0, 0)
         };
+        endTimeValue.SetBinding(Label.TextProperty, "CurrentBreakEndTime");
         entryContainer.AddWithSpan(endTimeValue, 2, 1, 1, 2);
 
         // break description

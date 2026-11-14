@@ -130,6 +130,7 @@ partial class CreateTimeCardViewModel : ObservableObject
      */
 
     internal event Action? AddBreakEntryBoxRequested;
+    internal event Action<string, string>? AddBreakDisplayBoxRequested;
     internal event Action? ClearBreakDisplayRequested;
 
     /*
@@ -279,6 +280,9 @@ partial class CreateTimeCardViewModel : ObservableObject
         EndBreakEnabled = true;
         BreakSavedNotifVisible = false;
 
+        DateTime currentTime = DateTime.Now;
+        CurrentBreakStartTime = string.Format(DEFAULT_DATETIME_FORMAT, currentTime);
+
         AddBreakEntryBoxRequested?.Invoke();
     }
     bool StartBreakCanExecute()
@@ -295,6 +299,9 @@ partial class CreateTimeCardViewModel : ObservableObject
         StartBreakEnabled = true;
         EndBreakEnabled = false;
         BreakSavedNotifVisible = true;
+
+        DateTime currentTime = DateTime.Now;
+        CurrentBreakEndTime = string.Format(DEFAULT_DATETIME_FORMAT, currentTime);
     }
     bool EndBreakCanExecute()
     {
