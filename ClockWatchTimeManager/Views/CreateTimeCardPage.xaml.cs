@@ -246,7 +246,6 @@ public partial class CreateTimeCardPage : ContentPage
             Style = LabelStyle,
             Margin = new(5, 5, 0, 0)
         };
-        endTimeValue.SetBinding(Label.TextProperty, "CurrentBreakEndTime");
         entryContainer.AddWithSpan(endTimeValue, 2, 1, 1, 2);
 
         // break description
