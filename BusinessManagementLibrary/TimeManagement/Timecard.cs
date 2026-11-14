@@ -109,18 +109,18 @@ namespace BusinessManagementLibrary.TimeManagement
          * 
          * breaks determines whether breaks or tasks are returned (true returns breaks, false returns tasks)
          */
-        public List<IEntry<TimesheetEntryData>> GetEitherBreaksOrTasks(bool breaks)
+        public List<TimesheetEntryData> GetEitherBreaksOrTasks(bool breaks)
         {
-            List<IEntry<TimesheetEntryData>> entries = [];
+            List<TimesheetEntryData> entryContainers = [];
             EntryType typeFilter = breaks ? EntryType.Break : EntryType.Task;
 
             foreach (IEntry<TimesheetEntryData> entry in TimesheetEntries)
             {
                 if (entry.EntryType == typeFilter)
-                    entries.Add(entry);
+                    entryContainers.Add(entry.ToDataContainer());
             }
 
-            return entries;
+            return entryContainers;
         }
 
         /*

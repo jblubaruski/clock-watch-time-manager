@@ -1,4 +1,5 @@
 ﻿using BusinessManagementLibrary.TimeManagement;
+using BusinessManagementLibrary.Data;
 using ClockWatchTimeManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Input;
+using System.Xml.Serialization;
 
 namespace ClockWatchTimeManager.ViewModels;
 
@@ -113,6 +115,13 @@ partial class CreateTimeCardViewModel : ObservableObject
         get => _currentBreakEndTime;
         set => SetProperty(ref _currentBreakEndTime, value);
     }
+    // the description of the current break
+    private string _currentBreakDescription = DEFAULT_BREAK_DESCRIPTION;
+    public string CurrentBreakDescription
+    {
+        get => _currentBreakDescription;
+        set => SetProperty(ref _currentBreakDescription, value);
+    }
 
     /*
      * PROPERTIES
@@ -120,6 +129,10 @@ partial class CreateTimeCardViewModel : ObservableObject
 
     // the ID of the current timecard (is -1 if theres no current timecard)
     private int CurrentTimecardID { get; set; } = -1;
+    // the ID of the current break (is -1 if theres no current break
+    private int CurrentBreakID { get; set; } = -1;
+    // the info contained in the current break
+    private TimesheetEntryData? CurrentBreakInfo { get; set; } = null;
     // the timeclock used to update the clock in duration display
     private Timeclock? Timeclock { get; } = null;
     // the reciever that gets notifications from the timeclock whenever it ticks
@@ -239,12 +252,20 @@ partial class CreateTimeCardViewModel : ObservableObject
             }
             catch (ArgumentException)
             {
-                App.logger.LogEntry($"clockOutTime ({clockOutTime}) is less than or equal to the current timecard's ClockInTime ({currentTimecard.ClockInTime})");
+                App.logger.LogEntry
+                    (
+                        $"In {ClockOut}:\n",
+                        $"clockOutTime ({clockOutTime}) is less than or equal to the current timecard's ClockInTime ({currentTimecard.ClockInTime})"
+                    );
             }
         }
         else
         {
-            App.logger.LogEntry($"The timecard corresponding to timecardID {CurrentTimecardID} does not exist in the catalog");
+            App.logger.LogEntry
+                (
+                    $"In {ClockOut}:\n",
+                    $"The timecard corresponding to timecardID {CurrentTimecardID} does not exist in the catalog"
+                );
         }
 
         ClockInDateTime = DEFAULT_DATETIME;
@@ -280,9 +301,30 @@ partial class CreateTimeCardViewModel : ObservableObject
         EndBreakEnabled = true;
         BreakSavedNotifVisible = false;
 
+        CurrentBreakEndTime = DEFAULT_DATETIME;
+
         DateTime currentTime = DateTime.Now;
+        CurrentBreakInfo = new(currentTime, null, null, true);
         CurrentBreakStartTime = string.Format(DEFAULT_DATETIME_FORMAT, currentTime);
 
+        ClearBreakDisplayRequested?.Invoke();
+
+        // display all breaks stored in the current timecard
+        Timecard? currentTimecard = App.catalog.GetEntry(CurrentTimecardID);
+        if (currentTimecard != null)
+        {
+            DisplayBreaksInTimecard(currentTimecard);
+        }
+        else
+        {
+            App.logger.LogEntry
+                (
+                    $"In {StartBreak}:\n",
+                    $"The timecard corresponding to timecardID {CurrentTimecardID} does not exist in the catalog"
+                );
+        }
+
+        // Add the current break entry box onto the end of the break display
         AddBreakEntryBoxRequested?.Invoke();
     }
     bool StartBreakCanExecute()
@@ -302,6 +344,38 @@ partial class CreateTimeCardViewModel : ObservableObject
 
         DateTime currentTime = DateTime.Now;
         CurrentBreakEndTime = string.Format(DEFAULT_DATETIME_FORMAT, currentTime);
+
+        ClearBreakDisplayRequested?.Invoke();
+
+        // log the current break and display all breaks in the current timecard
+        if (CurrentBreakInfo != null)
+        {
+            TimesheetEntryData breakInfoTemp = new(CurrentBreakInfo.StartTime, currentTime, CurrentBreakDescription, true);
+            CurrentBreakInfo = breakInfoTemp;
+
+            Timecard? currentTimecard = App.catalog.GetEntry(CurrentTimecardID);
+            if (currentTimecard != null)
+            {
+                CurrentBreakID = currentTimecard.AddEntry(CurrentBreakInfo);
+                DisplayBreaksInTimecard(currentTimecard);
+            }
+            else
+            {
+                App.logger.LogEntry
+                    (
+                        $"In {EndBreak}:\n",
+                        $"The timecard corresponding to timecardID {CurrentTimecardID} does not exist in the catalog"
+                    );
+            }
+        }
+        else
+        {
+            App.logger.LogEntry
+                (
+                    $"In {EndBreak}:\n",
+                    "There is no current break data container in the view model"
+                );
+        }
     }
     bool EndBreakCanExecute()
     {
@@ -335,6 +409,18 @@ partial class CreateTimeCardViewModel : ObservableObject
 
         CurrentBreakStartTime = DEFAULT_DATETIME;
         CurrentBreakEndTime = DEFAULT_DATETIME;
+    }
+
+    /*
+     * Displays all the breaks in the current timecard in the break display
+     */
+    private void DisplayBreaksInTimecard(Timecard timecard)
+    {
+        List<TimesheetEntryData> breaks = timecard.GetEitherBreaksOrTasks(true);
+        foreach (TimesheetEntryData breakData in breaks)
+        {
+            AddBreakDisplayBoxRequested?.Invoke(string.Format(DEFAULT_DATETIME_FORMAT, breakData.StartTime), string.Format(DEFAULT_DATETIME_FORMAT, breakData.EndTime));
+        }
     }
 
     /*

@@ -158,6 +158,7 @@ public partial class CreateTimeCardPage : ContentPage
         {
             Style = DescriptionBorderStyle,
             WidthRequest = 415,
+            Margin = new(0, 0, 0, 5),
             StrokeShape = new RoundRectangle()
             {
                 CornerRadius = new(4)
@@ -173,6 +174,9 @@ public partial class CreateTimeCardPage : ContentPage
             WidthRequest = 410
         };
         descriptionBorder.Content = descriptionValue;
+
+        // add container to breakDisplay
+        breakDisplay.Children.Add(entryContainer);
     }
 
     // adds an entry box to breakDisplay
