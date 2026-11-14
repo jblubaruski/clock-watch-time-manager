@@ -78,6 +78,7 @@ namespace ClockWatchTimeManager.ViewModels
                 {
                     currentBreak.EndTime = currentTime;
                     currentBreak.Description = CurrentBreakDescription;
+                    App.logger.LogEntry($"Logged Break:\n{currentBreak}");
                 }
                 catch (ArgumentException)
                 {
