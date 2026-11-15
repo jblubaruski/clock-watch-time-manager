@@ -120,10 +120,47 @@ namespace ClockWatchTimeManager.ViewModels
                         $"The timecard corresponding to timecardID {CurrentTimecardID} does not exist in the catalog"
                     );
             }
+
+            CurrentBreakDescription = DEFAULT_BREAK_DESCRIPTION;
         }
         bool EndBreakCanExecute()
         {
             return EndBreakEnabled;
+        }
+
+        /*
+         * The command that runs when the user clicks the edit break description button
+         */
+        [RelayCommand(CanExecute = nameof(EditBreakDescriptionCanExecute))]
+        void EditBreakDescription()
+        {
+            ToEditBreakDescriptionState();
+            
+            SwitchBreakDescriptionLabelWithEntryRequested?.Invoke();
+        }
+        bool EditBreakDescriptionCanExecute()
+        {
+            return EditBreakDescriptionEnabled;
+        }
+
+        /*
+         * The command that runs when the user hits enter while the break description entry box is active
+         */
+        [RelayCommand(CanExecute = nameof(EnterBreakDescriptionCanExecute))]
+        void EnterBreakDescription(string description)
+        {
+            if (IsDescriptionValid(description))
+            {
+                ToEnterBreakDescriptionState();
+
+                CurrentBreakDescription = description;
+
+                SwitchBreakDescriptionEntryWithLabelRequested?.Invoke();
+            }
+        }
+        bool EnterBreakDescriptionCanExecute()
+        {
+            return CurrentBreakDescEntryBoxEnabled;
         }
     }
 }

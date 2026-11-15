@@ -17,10 +17,6 @@ namespace ClockWatchTimeManager.ViewModels;
  */
 partial class CreateTimeCardViewModel : ObservableObject
 {
-    /*
-     * CONSTANTS
-     */
-
     // time and date shown when the time of an item in the time card is null
     public const string DEFAULT_DATETIME = "--:--:-- -- -- --------- --- --, ----";
     // duration shown when the user is not currently clocked in
@@ -31,10 +27,12 @@ partial class CreateTimeCardViewModel : ObservableObject
     public const string DEFAULT_DATETIME_FORMAT = "{0:h:mm:ss tt -- dddd MMM dd, yyyy}";
     // default break description shown when no description is present
     public const string DEFAULT_BREAK_DESCRIPTION = "Break description...";
-
-    /*
-     * BINDABLE PROPERTIES
-     */
+    // placeholder text for the description entry box
+    public const string BREAK_ENTRY_PLACEHOLDER = "Enter break description...";
+    // minimum description length
+    public const int MIN_DESCRIPTION_LENGTH = 1;
+    // maximum description length
+    public const int MAX_DESCRIPTION_LENGTH = 160;
 
     // whether or not the time card saved notification is visible
     private bool _timeCardSavedNotifVisible = false;
@@ -108,6 +106,14 @@ partial class CreateTimeCardViewModel : ObservableObject
         set => SetProperty(ref _currentBreakStartTime, value);
     }
 
+    // whether or not the edit break description button is enabled
+    private bool _editBreakDescriptionEnabled = true;
+    public bool EditBreakDescriptionEnabled
+    {
+        get => _editBreakDescriptionEnabled;
+        set => SetProperty(ref _editBreakDescriptionEnabled, value);
+    }
+
     // the description of the current break
     private string _currentBreakDescription = DEFAULT_BREAK_DESCRIPTION;
     public string CurrentBreakDescription
@@ -116,9 +122,13 @@ partial class CreateTimeCardViewModel : ObservableObject
         set => SetProperty(ref _currentBreakDescription, value);
     }
 
-    /*
-     * PROPERTIES
-     */
+    // whether or not the current break's description entry box is enabled
+    private bool _currentBreakDescEntryBoxEnabled = false;
+    public bool CurrentBreakDescEntryBoxEnabled
+    {
+        get => _currentBreakDescEntryBoxEnabled;
+        set => SetProperty(ref _currentBreakDescEntryBoxEnabled, value);
+    }
 
     // the ID of the current timecard (is -1 if theres no current timecard)
     private int CurrentTimecardID { get; set; } = -1;
@@ -129,17 +139,12 @@ partial class CreateTimeCardViewModel : ObservableObject
     // the reciever that gets notifications from the timeclock whenever it ticks
     private NotificationReciever<TimeclockDisplayInfo>? TickReciever { get; } = null;
 
-    /*
-     * EVENTS
-     */
-
     internal event Action? AddBreakEntryBoxRequested;
-    internal event Action<string, string>? AddBreakDisplayBoxRequested;
+    internal event Action<string, string, string?>? AddBreakDisplayBoxRequested;
     internal event Action? ClearBreakDisplayRequested;
+    internal event Action? SwitchBreakDescriptionLabelWithEntryRequested;
+    internal event Action? SwitchBreakDescriptionEntryWithLabelRequested;
 
-    /*
-     * CONSTRUCTOR
-     */
     public CreateTimeCardViewModel()
     {
         // set up the timeclock

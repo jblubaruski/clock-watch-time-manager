@@ -146,8 +146,20 @@ namespace ClockWatchTimeManager.ViewModels
             List<TimesheetEntryData> breaks = timecard.GetEitherBreaksOrTasks(true);
             foreach (TimesheetEntryData breakData in breaks)
             {
-                AddBreakDisplayBoxRequested?.Invoke(string.Format(DEFAULT_DATETIME_FORMAT, breakData.StartTime), string.Format(DEFAULT_DATETIME_FORMAT, breakData.EndTime));
+                AddBreakDisplayBoxRequested?.Invoke(string.Format(DEFAULT_DATETIME_FORMAT, breakData.StartTime), string.Format(DEFAULT_DATETIME_FORMAT, breakData.EndTime), breakData.Description);
             }
+        }
+
+        /*
+         * Returns true if the passed in string is a valid description string
+         * 
+         * The string must have between 1 and 160 (inclusive characters)
+         */
+        private bool IsDescriptionValid(string description)
+        {
+            if (description.Length < MIN_DESCRIPTION_LENGTH || description.Length > MAX_DESCRIPTION_LENGTH)
+                return false;
+            return true;
         }
 
         /*

@@ -1,6 +1,8 @@
 ﻿using ClockWatchTimeManager.ViewModels;
 using Microsoft.Maui.Controls.Shapes;
 using System.Diagnostics;
+using System.Resources;
+using System.Security.AccessControl;
 
 namespace ClockWatchTimeManager.Views;
 
@@ -12,6 +14,11 @@ public partial class CreateTimeCardPage : ContentPage
     private Style? DescriptionBorderStyle { get; set; } = null;
     private Style? DescriptionLabelStyle { get; set; } = null;
     private Style? ButtonStyle { get; set; } = null;
+
+    // named controls
+    private Label? currentBreakDescriptionValue = null;
+    private Border? currentBreakDescriptionBorder = null;
+    private Entry? currentBreakDescriptionEntryBox = null;
 
     public CreateTimeCardPage()
     {
@@ -26,6 +33,8 @@ public partial class CreateTimeCardPage : ContentPage
         ((CreateTimeCardViewModel)BindingContext).AddBreakEntryBoxRequested += AddBreakEntryBox;
         ((CreateTimeCardViewModel)BindingContext).AddBreakDisplayBoxRequested += AddBreakDisplayBox;
         ((CreateTimeCardViewModel)BindingContext).ClearBreakDisplayRequested += ClearBreakDisplay;
+        ((CreateTimeCardViewModel)BindingContext).SwitchBreakDescriptionLabelWithEntryRequested += SwitchBreakDescriptionLabelWithEntry;
+        ((CreateTimeCardViewModel)BindingContext).SwitchBreakDescriptionEntryWithLabelRequested += SwitchBreakDescriptionEntryWithLabel;
     }
 
     protected override void OnDisappearing()
@@ -35,6 +44,8 @@ public partial class CreateTimeCardPage : ContentPage
         ((CreateTimeCardViewModel)BindingContext).AddBreakEntryBoxRequested -= AddBreakEntryBox;
         ((CreateTimeCardViewModel)BindingContext).AddBreakDisplayBoxRequested -= AddBreakDisplayBox;
         ((CreateTimeCardViewModel)BindingContext).ClearBreakDisplayRequested -= ClearBreakDisplay;
+        ((CreateTimeCardViewModel)BindingContext).SwitchBreakDescriptionLabelWithEntryRequested -= SwitchBreakDescriptionLabelWithEntry;
+        ((CreateTimeCardViewModel)BindingContext).SwitchBreakDescriptionEntryWithLabelRequested -= SwitchBreakDescriptionEntryWithLabel;
     }
 
     // loads each style used in this code-behind file and logs an error in the log if the style could not be found
@@ -84,7 +95,7 @@ public partial class CreateTimeCardPage : ContentPage
     }
 
     // adds a display box to breakDisplay
-    private void AddBreakDisplayBox(string breakStartTime, string breakEndTime)
+    private void AddBreakDisplayBox(string breakStartTime, string breakEndTime, string? description)
     {
         // break entry container
 
@@ -168,7 +179,7 @@ public partial class CreateTimeCardPage : ContentPage
 
         Label descriptionValue = new()
         {
-            Text = CreateTimeCardViewModel.DEFAULT_BREAK_DESCRIPTION,
+            Text = description,
             Style = DescriptionLabelStyle,
             VerticalTextAlignment = TextAlignment.Center,
             WidthRequest = 410
@@ -250,7 +261,7 @@ public partial class CreateTimeCardPage : ContentPage
 
         // break description
 
-        Border descriptionBorder = new()
+        currentBreakDescriptionBorder = new()
         {
             Style = DescriptionBorderStyle,
             WidthRequest = 415,
@@ -259,16 +270,31 @@ public partial class CreateTimeCardPage : ContentPage
                 CornerRadius = new(4)
             }
         };
-        entryContainer.AddWithSpan(descriptionBorder, 3, 0, 1, 3);
+        entryContainer.AddWithSpan(currentBreakDescriptionBorder, 3, 0, 1, 3);
 
-        Label descriptionValue = new()
+        currentBreakDescriptionValue = new()
         {
-            Text = CreateTimeCardViewModel.DEFAULT_BREAK_DESCRIPTION,
             Style = DescriptionLabelStyle,
             VerticalTextAlignment = TextAlignment.Center,
             WidthRequest = 410
         };
-        descriptionBorder.Content = descriptionValue;
+        currentBreakDescriptionValue.SetBinding(Label.TextProperty, "CurrentBreakDescription");
+        currentBreakDescriptionBorder.Content = currentBreakDescriptionValue;
+
+        currentBreakDescriptionEntryBox = new()
+        {
+            Placeholder = CreateTimeCardViewModel.BREAK_ENTRY_PLACEHOLDER,
+            Style = DescriptionLabelStyle,
+            VerticalTextAlignment = TextAlignment.Center,
+            WidthRequest = 410
+        };
+        currentBreakDescriptionEntryBox.SetBinding(IsEnabledProperty, "CurrentBreakDescEntryBoxEnabled");
+        currentBreakDescriptionEntryBox.SetBinding(Entry.ReturnCommandProperty, "EnterBreakDescriptionCommand");
+        currentBreakDescriptionEntryBox.SetBinding(Entry.ReturnCommandParameterProperty, new Binding
+        {
+            Source = currentBreakDescriptionEntryBox,
+            Path = nameof(Entry.Text)
+        });
 
         // edit description button
 
@@ -280,10 +306,43 @@ public partial class CreateTimeCardPage : ContentPage
             HorizontalOptions = LayoutOptions.Start,
             Margin = new(0,5,0,5)
         };
+        editDescriptionButton.SetBinding(Button.CommandProperty, "EditBreakDescriptionCommand");
         entryContainer.AddWithSpan(editDescriptionButton, 4, 0, 1, 3);
 
         // add container to breakDisplay
         breakDisplay.Children.Add(entryContainer);
+    }
+
+    private void SwitchBreakDescriptionLabelWithEntry()
+    {
+        if (currentBreakDescriptionBorder != null)
+        {
+            currentBreakDescriptionBorder.Content = currentBreakDescriptionEntryBox;
+        }
+        else
+        {
+            App.logger.LogEntry
+            (
+                $"In {nameof(SwitchBreakDescriptionLabelWithEntry)}:\n",
+                $"{nameof(currentBreakDescriptionBorder)} is null"
+            );
+        }
+    }
+
+    private void SwitchBreakDescriptionEntryWithLabel()
+    {
+        if (currentBreakDescriptionBorder != null)
+        {
+            currentBreakDescriptionBorder.Content = currentBreakDescriptionValue;
+        }
+        else
+        {
+            App.logger.LogEntry
+            (
+                $"In {nameof(SwitchBreakDescriptionEntryWithLabel)}:\n",
+                $"{nameof(currentBreakDescriptionBorder)} is null"
+            );
+        }
     }
 
     private void ClearBreakDisplay()

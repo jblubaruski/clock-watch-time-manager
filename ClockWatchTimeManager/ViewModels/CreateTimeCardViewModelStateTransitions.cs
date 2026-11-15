@@ -8,7 +8,7 @@ namespace ClockWatchTimeManager.ViewModels
     partial class CreateTimeCardViewModel : ObservableObject
     {
         /*
-         * Sets the page to its base state
+         * Transitions the page to its base state
          */
         private void ResetPage()
         {
@@ -22,12 +22,14 @@ namespace ClockWatchTimeManager.ViewModels
             StartBreakEnabled = false;
             EndBreakEnabled = false;
             BreakSavedNotifVisible = false;
+            CurrentBreakDescEntryBoxEnabled = false;
 
             CurrentBreakStartTime = DEFAULT_DATETIME;
+            CurrentBreakDescription = DEFAULT_BREAK_DESCRIPTION;
         }
 
         /*
-         * Sets the page to the after clock in state
+         * Transitions the page to the after clock in state
          */
         private void ToAfterClockInState()
         {
@@ -41,7 +43,7 @@ namespace ClockWatchTimeManager.ViewModels
         }
 
         /*
-         * Sets the page to the after clock out state
+         * Transitions the page to the after clock out state
          */
         private void ToAfterClockOutState()
         {
@@ -58,7 +60,7 @@ namespace ClockWatchTimeManager.ViewModels
         }
 
         /*
-         * Sets the page to the after start break state
+         * Transitions the page to the after start break state
          */
         private void ToAfterStartBreakState()
         {
@@ -68,13 +70,33 @@ namespace ClockWatchTimeManager.ViewModels
         }
 
         /*
-         * Sets the page to the after end break state
+         * Transitions the page to the after end break state
          */
         private void ToAfterEndBreakState()
         {
             StartBreakEnabled = true;
             EndBreakEnabled = false;
             BreakSavedNotifVisible = true;
+        }
+
+        /*
+         * Transitions the page to the edit break description state
+         */
+        private void ToEditBreakDescriptionState()
+        {
+            CurrentBreakDescEntryBoxEnabled = true;
+            ClockOutEnabled = false;
+            EndBreakEnabled = false;
+        }
+
+        /*
+         * Transitions the page to the enter break description state
+         */
+        private void ToEnterBreakDescriptionState()
+        {
+            CurrentBreakDescEntryBoxEnabled = false;
+            ClockOutEnabled = true;
+            EndBreakEnabled = true;
         }
     }
 }
